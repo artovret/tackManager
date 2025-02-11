@@ -10,6 +10,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.titixoid.taskmanager.ui.admin.workers.AdminWorkerListViewModel
+import com.titixoid.taskmanager.ui.admin.workers.WorkerListScreen
 import com.titixoid.taskmanager.ui.theme.TaskManagerTheme
 import com.titixoid.taskmanager.ui.worker.tasks.Task
 import com.titixoid.taskmanager.ui.worker.tasks.TaskFilter
@@ -19,6 +21,7 @@ import com.titixoid.taskmanager.ui.worker.tasks.WorkerTaskListViewModel
 
 class MainActivity : ComponentActivity() {
     private val viewModel: WorkerTaskListViewModel by viewModels()
+    private val workerListViewModel: AdminWorkerListViewModel by viewModels()
 
     @SuppressLint("StateFlowValueCalledInComposition")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,15 +29,20 @@ class MainActivity : ComponentActivity() {
         setContent {
             TaskManagerTheme {
                 // Подписываемся на uiState, чтобы получать обновления
-                val uiState by viewModel.uiState.collectAsState()
-                WorkerTaskListScreen(
+//                val uiState by viewModel.uiState.collectAsState()
+//                WorkerTaskListScreen(
+//                    uiState = uiState,
+//                    onFilterSelected = { filter ->
+//                        viewModel.setFilter(filter)
+//                    },
+//                    onTaskClick = { task ->
+//                        // Обработка клика по задаче (например, навигация)
+//                    }
+//                )
+                val uiState by workerListViewModel.uiState.collectAsState()
+                WorkerListScreen(
                     uiState = uiState,
-                    onFilterSelected = { filter ->
-                        viewModel.setFilter(filter)
-                    },
-                    onTaskClick = { task ->
-                        // Обработка клика по задаче (например, навигация)
-                    }
+                    onWorkerClick = {}
                 )
             }
         }

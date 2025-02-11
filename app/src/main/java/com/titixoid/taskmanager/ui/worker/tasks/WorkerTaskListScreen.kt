@@ -25,6 +25,8 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.titixoid.taskmanager.ui.theme.Typography
+import com.titixoid.taskmanager.ui.theme.primaryText
+import com.titixoid.taskmanager.ui.theme.secondText
 import com.titixoid.taskmanager.ui.theme.space16
 import com.titixoid.taskmanager.ui.theme.space32
 import com.titixoid.taskmanager.ui.widgets.BackgroundColumn
@@ -125,13 +127,13 @@ fun WorkerTaskListScreen(
                             Text(
                                 text = task.title,
                                 style = Typography.bodyLarge,
-                                color = MaterialTheme.colorScheme.onBackground
+                                color = primaryText
                             )
                             Spacer(modifier = Modifier.height(8.dp))
                             Text(
                                 text = task.description,
                                 style = Typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onBackground
+                                color = secondText
                             )
                         }
                     }
