@@ -1,5 +1,6 @@
 package com.titixoid.taskmanager.ui.start
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -32,8 +33,9 @@ import com.titixoid.taskmanager.ui.theme.padding34
  */
 @Composable
 fun StartScreen(
-    onLoginClicked: () -> Unit
+    onStartClicked: () -> Unit
 ) {
+    Log.d("TaskNavigation", "StartScreen composed. onStartClicked = $onStartClicked")
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -51,7 +53,6 @@ fun StartScreen(
                     contentDescription = "Логотип"
                 )
             }
-            // Нижняя половина – кнопка "Войти"
             Box(
                 modifier = Modifier
                     .weight(1f)
@@ -59,7 +60,10 @@ fun StartScreen(
                 contentAlignment = Alignment.Center
             ) {
                 Button(
-                    onClick = onLoginClicked,
+                    onClick = {
+                        Log.d("TaskNavigation", "onStartClicked triggered")
+                        onStartClicked()
+                    },
                     modifier = Modifier
                         .width(200.dp)
                         .height(90.dp),
