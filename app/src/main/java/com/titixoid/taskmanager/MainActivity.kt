@@ -6,12 +6,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.collectAsState
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.titixoid.taskmanager.ui.admin.workers.AdminWorkerListViewModel
-import com.titixoid.taskmanager.ui.admin.workers.WorkerListScreen
+import com.titixoid.taskmanager.ui.start.StartScreen
 import com.titixoid.taskmanager.ui.theme.TaskManagerTheme
 import com.titixoid.taskmanager.ui.worker.tasks.Task
 import com.titixoid.taskmanager.ui.worker.tasks.TaskFilter
@@ -39,11 +36,12 @@ class MainActivity : ComponentActivity() {
 //                        // Обработка клика по задаче (например, навигация)
 //                    }
 //                )
-                val uiState by workerListViewModel.uiState.collectAsState()
-                WorkerListScreen(
-                    uiState = uiState,
-                    onWorkerClick = {}
-                )
+//                val uiState by workerListViewModel.uiState.collectAsState()
+//                WorkerListScreen(
+//                    uiState = uiState,
+//                    onWorkerClick = {}
+//                )
+                StartScreen {}
             }
         }
     }
