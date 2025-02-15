@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
+import com.google.firebase.FirebaseApp
 import com.titixoid.taskmanager.ui.TasksNavHost
 import com.titixoid.taskmanager.ui.admin.workers.AdminWorkerListViewModel
 import com.titixoid.taskmanager.ui.theme.TaskManagerTheme
@@ -16,6 +17,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        FirebaseApp.initializeApp(this)
         setContent {
             TaskNavApp()
         }

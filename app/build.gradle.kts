@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.org.jetbrains.kotlin.android)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlinSerialization)
+    alias(libs.plugins.google.services)
     id("kotlin-parcelize")
 }
 
@@ -50,6 +51,12 @@ dependencies {
 //    implementation(project(":presentation"))
 //    implementation(project(":core:ui"))
 //    implementation(project(":core:di"))
+
+    // Firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.firestore)
+    implementation(libs.firebase.storage)
 
     implementation(libs.core.ktx)
 

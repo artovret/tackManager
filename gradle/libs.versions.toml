@@ -43,6 +43,13 @@ androidx-test-ext-junit = "1.2.1"
 androidx-test-runner = "1.6.2"
 kotlinx-coroutines-test = "1.9.0"
 
+# Firebase
+firebase-bom = "32.7.0"
+firebase-auth = "22.3.0"
+firebase-firestore = "24.10.0"
+firebase-storage = "20.3.0"
+firebase-analytics = "21.5.0"
+
 [libraries]
 
 # core
@@ -89,6 +96,14 @@ androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version
 androidx-test-runner = { group = "androidx.test", name = "runner", version.ref = "androidx-test-runner" }
 androidx-datastore-core = { group = "androidx.datastore", name = "datastore-core", version = "androidx-datastore-preferences" }
 
+# Firebase
+firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebase-bom" }
+firebase-auth = { group = "com.google.firebase", name = "firebase-auth-ktx", version.ref = "firebase-auth" }
+firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore-ktx", version.ref = "firebase-firestore" }
+firebase-storage = { group = "com.google.firebase", name = "firebase-storage-ktx", version.ref = "firebase-storage" }
+firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics-ktx", version.ref = "firebase-analytics" }
+
+
 [plugins]
 com-android-application = { id = "com.android.application", version.ref = "agp" }
 org-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
@@ -97,5 +112,6 @@ com-android-library = { id = "com.android.library", version.ref = "agp" }
 org-jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "org-jetbrains-kotlin-jvm" }
 devtools-ksp = { id = "com.google.devtools.ksp", version.ref = "devtools-ksp" }
 kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+google-services = { id = "com.google.gms.google-services", version = "4.4.0" }
 
 [bundles]

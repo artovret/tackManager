@@ -60,10 +60,7 @@ fun StartScreen(
                 contentAlignment = Alignment.Center
             ) {
                 Button(
-                    onClick = {
-                        Log.d("TaskNavigation", "onStartClicked triggered")
-                        onStartClicked()
-                    },
+                    onClick = onStartClicked,
                     modifier = Modifier
                         .width(200.dp)
                         .height(90.dp),

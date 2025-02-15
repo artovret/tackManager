@@ -35,8 +35,13 @@ fun TasksNavHost(
             navController.navigate(targetDestination)
         }
         )
-        login(onLoginClicked = {})
+        login(onLoginClicked = {
+            navController.popBackStack()
+            navController.navigate(roleGraph)
+        }
+        )
         admin(
+            navController = navController,
             onLoginClicked = {},
             onNavigateToResetPasswordClicked = {},
             onNavigateToRegisterClicked = {},

@@ -1,54 +1,37 @@
 package com.titixoid.taskmanager.ui.login
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
-import com.titixoid.taskmanager.R
-import com.titixoid.taskmanager.ui.theme.TaskManagerTheme
-import com.titixoid.taskmanager.ui.theme.itemHeight75
-import com.titixoid.taskmanager.ui.theme.itemWidth104
-import com.titixoid.taskmanager.ui.theme.space16
-import com.titixoid.taskmanager.ui.theme.space24
-import com.titixoid.taskmanager.ui.theme.space32
-import com.titixoid.taskmanager.ui.widgets.BackgroundColumn
-import com.titixoid.taskmanager.ui.widgets.FormField
-import com.titixoid.taskmanager.ui.widgets.StatusBarInsetsSpacer
-import com.titixoid.taskmanager.ui.theme.Typography
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.ui.AbsoluteAlignment
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.titixoid.taskmanager.ui.theme.Gradients
+import com.titixoid.taskmanager.ui.theme.TaskManagerTheme
+import com.titixoid.taskmanager.ui.theme.Typography
+import com.titixoid.taskmanager.ui.theme.space16
+import com.titixoid.taskmanager.ui.theme.space32
 import com.titixoid.taskmanager.ui.theme.space40
-import com.titixoid.taskmanager.ui.theme.space56
 import com.titixoid.taskmanager.ui.theme.space8
 import com.titixoid.taskmanager.ui.theme.space90
+import com.titixoid.taskmanager.ui.widgets.BackgroundColumn
 import com.titixoid.taskmanager.ui.widgets.BottomBarInsetsSpacer
+import com.titixoid.taskmanager.ui.widgets.FormField
+import com.titixoid.taskmanager.ui.widgets.StatusBarInsetsSpacer
 
 
 @Composable
@@ -102,7 +85,7 @@ fun SignInScreen(
         Spacer(modifier = Modifier.height(space90))
 
         Button(
-            onClick = { /* обработка нажатия */ },
+            onClick = onLoginClicked,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(70.dp),
