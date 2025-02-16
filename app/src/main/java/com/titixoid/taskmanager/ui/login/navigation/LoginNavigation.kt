@@ -23,9 +23,13 @@ fun NavGraphBuilder.login(onLoginClicked: () -> Unit) {
             onEmailChanged = viewModel::updateEmail,
             onPasswordChanged = viewModel::updatePassword,
             onLoginClicked = {
-                viewModel.validateCredentials()
-                if (uiState.error == null) {
-                    onLoginClicked()
+                viewModel.signIn { success ->
+                    if (success) {
+                        Log.d("SignInViewModel", "Login success")
+                        onLoginClicked()
+                    } else {
+                        Log.d("SignInViewModel", "Login failed")
+                    }
                 }
             }
         )

@@ -63,8 +63,8 @@ fun SignInScreen(
 
         FormField(
             modifier = Modifier.fillMaxWidth(),
-            value = signInUiState.email,
-            hasError = false, // TODO брать из uiState
+            value = signInUiState.login,
+            hasError = signInUiState.error, // TODO брать из uiState
             onValueChange = onEmailChanged // TODO добавить обработчик
         )
         Spacer(modifier = Modifier.height(space40))
@@ -78,6 +78,7 @@ fun SignInScreen(
 
         FormField(
             modifier = Modifier.fillMaxWidth(),
+            hasError = signInUiState.error, // TODO брать из uiState
             value = signInUiState.password, // TODO заменить на значение из uiState
             onValueChange = onPasswordChanged, // TODO добавить обработчик
             visualTransformation = PasswordVisualTransformation()
@@ -123,7 +124,7 @@ fun SignInScreenPreview() {
     TaskManagerTheme {
         SignInScreen(
             signInUiState = SignInUiState(
-                email = "traci.knox@example.com",
+                login = "traci.knox@example.com",
                 password = "ad"
         ),
             onEmailChanged = {},
