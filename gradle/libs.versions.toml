@@ -24,6 +24,9 @@ lifecycle-runtime-compose = "2.6.2"
 lifecycle-viewmodel-ktx = "2.6.2"
 coil-compose = "2.4.0"
 
+# Dagger
+dagger = "2.50"
+
 # compose
 compose-bom = "2025.02.00"
 activity-compose = "1.10.0"
@@ -52,6 +55,8 @@ firebase-analytics = "21.5.0"
 espressoCore = "3.6.1"
 appcompat = "1.7.0"
 material = "1.12.0"
+firebaseAuthKtx = "23.2.0"
+firebaseFirestoreKtx = "25.1.2"
 
 [libraries]
 
@@ -82,6 +87,13 @@ navigation = { group = "androidx.navigation", name = "navigation-compose", versi
 androidx-navigation-runtime-ktx = { group = "androidx.navigation", name = "navigation-runtime-ktx", version.ref = "navigation" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization" }
 
+# Dagger
+dagger = { group = "com.google.dagger", name = "dagger", version.ref = "dagger" }
+dagger-compiler = { group = "com.google.dagger", name = "dagger-compiler", version.ref = "dagger" }
+dagger-android = { group = "com.google.dagger", name = "dagger-android", version.ref = "dagger" }
+dagger-android-support = { group = "com.google.dagger", name = "dagger-android-support", version.ref = "dagger" }
+dagger-android-processor = { group = "com.google.dagger", name = "dagger-android-processor", version.ref = "dagger" }
+
 # data
 androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "androidx-room" }
 androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "androidx-room" }
@@ -108,6 +120,8 @@ firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+firebase-auth-ktx = { group = "com.google.firebase", name = "firebase-auth-ktx", version.ref = "firebaseAuthKtx" }
+firebase-firestore-ktx = { group = "com.google.firebase", name = "firebase-firestore-ktx", version.ref = "firebaseFirestoreKtx" }
 
 
 [plugins]
