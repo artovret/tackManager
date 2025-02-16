@@ -5,7 +5,6 @@ plugins {
     alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.google.services)
     id("kotlin-parcelize")
-    id("kotlin-kapt")
 }
 
 android {
@@ -47,18 +46,15 @@ android {
 }
 
 dependencies {
-//    implementation(project(":data"))
-//    implementation(project(":domain"))
+    implementation(project(":data"))
+    implementation(project(":domain"))
 //    implementation(project(":presentation"))
 //    implementation(project(":core:ui"))
 //    implementation(project(":core:di"))
 
-    // Dagger 2
-    implementation(libs.dagger)
-    kapt(libs.dagger.compiler)
-    implementation(libs.dagger.android)
-    implementation(libs.dagger.android.support)
-    kapt(libs.dagger.android.processor)
+    //Di
+    implementation(libs.koin.android)
+    implementation(libs.koin.androidx.compose)
 
     // Firebase
     implementation(platform(libs.firebase.bom))
