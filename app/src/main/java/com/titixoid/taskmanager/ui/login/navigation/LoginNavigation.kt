@@ -20,9 +20,14 @@ fun NavGraphBuilder.login(onLoginClicked: () -> Unit) {
         val uiState by viewModel.uiState.collectAsStateWithLifecycle()
         SignInScreen(
             signInUiState = uiState,
-            onEmailChanged = {},
-            onPasswordChanged = {},
-            onLoginClicked = onLoginClicked
+            onEmailChanged = viewModel::updateEmail,
+            onPasswordChanged = viewModel::updatePassword,
+            onLoginClicked = {
+                viewModel.validateCredentials()
+                if (uiState.error == null) {
+                    onLoginClicked()
+                }
+            }
         )
     }
 }

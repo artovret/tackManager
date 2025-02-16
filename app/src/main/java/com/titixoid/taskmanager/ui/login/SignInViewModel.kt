@@ -9,7 +9,8 @@ import kotlinx.coroutines.flow.update
 @Immutable
 data class SignInUiState(
     val email: String = "",
-    val password: String = ""
+    val password: String = "",
+    val error: String? = null
 )
 
 
@@ -29,5 +30,16 @@ class SignInViewModel : ViewModel() {
         _uiState.update {
             it.copy(password = password)
         }
+    }
+
+    fun validateCredentials() {
+        val emailValid = uiState.value.email.isNotBlank() && isValidEmail(uiState.value.email)
+        val passwordValid = uiState.value.password.isNotBlank()
+
+        _uiState.update { it.copy(error = if (emailValid && passwordValid) null else "Некорректные данные") }
+    }
+
+    private fun isValidEmail(email: String): Boolean {
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
     }
 }
