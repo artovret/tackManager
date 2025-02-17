@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -39,7 +40,7 @@ fun SignInScreen(
     signInUiState: SignInUiState,
     onEmailChanged: (String) -> Unit,
     onPasswordChanged: (String) -> Unit,
-    onLoginClicked: () -> Unit,
+    onLoginClicked: () -> Unit, // Удалите этот параметр
 ) {
     BackgroundColumn {
         StatusBarInsetsSpacer()
@@ -54,6 +55,7 @@ fun SignInScreen(
         )
         Spacer(modifier = Modifier.height(space40))
 
+
         Text(
             text = "Логин",
             style = Typography.bodySmall,
@@ -64,8 +66,8 @@ fun SignInScreen(
         FormField(
             modifier = Modifier.fillMaxWidth(),
             value = signInUiState.login,
-            hasError = signInUiState.error, // TODO брать из uiState
-            onValueChange = onEmailChanged // TODO добавить обработчик
+            hasError = signInUiState.error,
+            onValueChange = onEmailChanged
         )
         Spacer(modifier = Modifier.height(space40))
 
@@ -78,9 +80,9 @@ fun SignInScreen(
 
         FormField(
             modifier = Modifier.fillMaxWidth(),
-            hasError = signInUiState.error, // TODO брать из uiState
-            value = signInUiState.password, // TODO заменить на значение из uiState
-            onValueChange = onPasswordChanged, // TODO добавить обработчик
+            value = signInUiState.password,
+            hasError = signInUiState.error,
+            onValueChange = onPasswordChanged,
             visualTransformation = PasswordVisualTransformation()
         )
         Spacer(modifier = Modifier.height(space90))
@@ -94,7 +96,8 @@ fun SignInScreen(
             contentPadding = PaddingValues(0.dp),
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color.Transparent
-            )
+            ),
+            enabled = !signInUiState.isLoading
         ) {
             Box(
                 modifier = Modifier
@@ -106,13 +109,32 @@ fun SignInScreen(
                     .padding(8.dp),
                 contentAlignment = Alignment.Center
             ) {
-                Text(
-                    text = "Войти",
-                    style = Typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.background
-                )
+                if (signInUiState.isLoading) {
+                    // Индикатор загрузки (например, CircularProgressIndicator)
+                    CircularProgressIndicator(color = MaterialTheme.colorScheme.background)
+                } else {
+                    Text(
+                        text = "Войти",
+                        style = Typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.background
+                    )
+                }
             }
         }
+
+
+        if (signInUiState.error) {
+            Text(
+                text = "Неверный логин или пароль",
+                style = Typography.bodySmall,
+                color = MaterialTheme.colorScheme.error,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp),
+                textAlign = TextAlign.Center
+            )
+        }
+
         BottomBarInsetsSpacer()
     }
 }

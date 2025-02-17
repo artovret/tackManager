@@ -1,6 +1,5 @@
 package com.titixoid.taskmanager.ui.login
 
-import android.util.Log
 import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -14,8 +13,10 @@ import kotlinx.coroutines.launch
 data class SignInUiState(
     val login: String = "",
     val password: String = "",
+    val role: String? = null,
     val error: Boolean = false,
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val isSuccess: Boolean? = null
 )
 
 class SignInViewModel(
@@ -32,31 +33,22 @@ class SignInViewModel(
         _uiState.update { it.copy(password = password, error = false) }
     }
 
-    fun signIn(onResult: (Boolean) -> Unit) {
-        _uiState.update { it.copy(isLoading = true) }
+    fun signIn() {
+        _uiState.update { it.copy(isLoading = true, error = false) }
         viewModelScope.launch {
-            val emailValid = uiState.value.login.isNotBlank() &&
-                    android.util.Patterns.EMAIL_ADDRESS.matcher(uiState.value.login).matches()
-            val passwordValid = uiState.value.password.isNotBlank()
-
-            if (!emailValid || !passwordValid) {
-                _uiState.update { it.copy(error = true, isLoading = false) }
-                onResult(false)
-                return@launch
+            val user = signInUseCase(uiState.value.login, uiState.value.password)
+            _uiState.update {
+                it.copy(
+                    isSuccess = (user != null),
+                    role = user?.role,
+                    isLoading = false,
+                    error = (user == null)
+                )
             }
-
-            Log.d("SignInViewModel", "Электронная почта: ${uiState.value.login}")
-            Log.d("SignInViewModel", "Пароль: ${uiState.value.password}")
-
-            val success = signInUseCase(uiState.value.login, uiState.value.password)
-            Log.d("SignInViewModel", "Результат UseCase: $success")
-
-            if (success) {
-                _uiState.update { it.copy(error = false, isLoading = false) }
-            } else {
-                _uiState.update { it.copy(error = true, isLoading = false) }
-            }
-            onResult(success)
         }
+    }
+
+    fun resetAuthState() {
+        _uiState.update { it.copy(isLoading = false, error = false) }
     }
 }

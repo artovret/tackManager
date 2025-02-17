@@ -9,11 +9,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.titixoid.taskmanager.ui.login.navigation.SignInDestination
 import com.titixoid.taskmanager.ui.login.navigation.login
-import com.titixoid.taskmanager.ui.start.navigation.AdminGraph
 import com.titixoid.taskmanager.ui.start.navigation.StartDestination
 import com.titixoid.taskmanager.ui.start.navigation.admin
 import com.titixoid.taskmanager.ui.start.navigation.start
-import com.titixoid.taskmanager.ui.worker.tasks.navigation.WorkerDestination
 import com.titixoid.taskmanager.ui.worker.tasks.navigation.workerRole
 
 @Composable
@@ -23,8 +21,7 @@ fun TasksNavHost(
 ) {
     val authenticated by viewModel.authenticated.collectAsState()
     val adminRole by viewModel.admin.collectAsState()
-    val roleGraph = if (adminRole) AdminGraph else WorkerDestination
-    val targetDestination = if (authenticated) roleGraph else SignInDestination
+    val targetDestination = SignInDestination
 
     NavHost(
         navController = navController,
@@ -35,11 +32,7 @@ fun TasksNavHost(
             navController.navigate(targetDestination)
         }
         )
-        login(onLoginClicked = {
-            navController.popBackStack()
-            navController.navigate(roleGraph)
-        }
-        )
+        login(navController)
         admin(
             navController = navController,
             onLoginClicked = {},
