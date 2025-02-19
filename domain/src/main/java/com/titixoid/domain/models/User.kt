@@ -1,5 +1,7 @@
 package com.titixoid.domain.models
 
 data class User(
-    val role: String
+    val firstName: String,
+    val lastName: String,
+    val role: String,
 )

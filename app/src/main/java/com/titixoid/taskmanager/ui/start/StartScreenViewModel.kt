@@ -2,40 +2,39 @@ package com.titixoid.taskmanager.ui.start
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
+import com.titixoid.domain.usecases.CheckAuthStatusUseCase
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.util.Locale
 
-
-sealed class StartScreenEvent {
-    object NavigateToHome : StartScreenEvent()
-    object NavigateToAuth : StartScreenEvent()
+sealed class StartNavigationDestination {
+    data object Loading : StartNavigationDestination()
+    data object Auth : StartNavigationDestination()
+    data object Worker : StartNavigationDestination()
+    data object Admin : StartNavigationDestination()
 }
 
-/**
- * ViewModel для стартового экрана сделана про запас, возможно не понадобится в будущем.
- */
-class StartScreenViewModel : ViewModel() {
+class StartScreenViewModel(
+    private val checkAuthStatusUseCase: CheckAuthStatusUseCase
+) : ViewModel() {
 
-    private val _uiEvent = MutableSharedFlow<StartScreenEvent>()
-    val uiEvent = _uiEvent.asSharedFlow()
+    private val _navigationState =
+        MutableStateFlow<StartNavigationDestination>(StartNavigationDestination.Loading)
+    val navigationState: StateFlow<StartNavigationDestination> get() = _navigationState
 
     init {
         viewModelScope.launch {
-            val isAuthorized = checkAuthStatus()
-            if (isAuthorized) {
-                _uiEvent.emit(StartScreenEvent.NavigateToHome)
+            val authStatus = checkAuthStatusUseCase()
+            val destination = if (!authStatus.isAuthenticated) {
+                StartNavigationDestination.Auth
             } else {
-                _uiEvent.emit(StartScreenEvent.NavigateToAuth)
+                when (authStatus.role?.lowercase(Locale.getDefault())) {
+                    "admin" -> StartNavigationDestination.Admin
+                    else -> StartNavigationDestination.Worker
+                }
             }
+            _navigationState.value = destination
         }
     }
-
-    /**
-     * Функция-эмулятор проверки авторизации пользователя.
-     * Здесь можно реализовать логику проверки токена или выполнить запрос к серверу.
-     */
-    private suspend fun checkAuthStatus(): Boolean {
-        return false
-    }
-} 
+}

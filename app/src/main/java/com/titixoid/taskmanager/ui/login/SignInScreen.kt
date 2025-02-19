@@ -40,7 +40,7 @@ fun SignInScreen(
     signInUiState: SignInUiState,
     onEmailChanged: (String) -> Unit,
     onPasswordChanged: (String) -> Unit,
-    onLoginClicked: () -> Unit, // Удалите этот параметр
+    onLoginClicked: () -> Unit,
 ) {
     BackgroundColumn {
         StatusBarInsetsSpacer()

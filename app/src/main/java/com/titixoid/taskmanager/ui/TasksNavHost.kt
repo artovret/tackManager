@@ -7,11 +7,14 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
+import com.titixoid.domain.models.StartNavigationDestination
 import com.titixoid.taskmanager.ui.login.navigation.SignInDestination
 import com.titixoid.taskmanager.ui.login.navigation.login
+import com.titixoid.taskmanager.ui.start.navigation.AdminGraph
 import com.titixoid.taskmanager.ui.start.navigation.StartDestination
 import com.titixoid.taskmanager.ui.start.navigation.admin
 import com.titixoid.taskmanager.ui.start.navigation.start
+import com.titixoid.taskmanager.ui.worker.tasks.navigation.WorkerDestination
 import com.titixoid.taskmanager.ui.worker.tasks.navigation.workerRole
 
 @Composable
@@ -27,11 +30,15 @@ fun TasksNavHost(
         navController = navController,
         startDestination = StartDestination
     ) {
-        start(onStartClicked = {
+        start { destination ->
             navController.popBackStack()
-            navController.navigate(targetDestination)
+            when (destination) {
+                StartNavigationDestination.Admin -> navController.navigate(AdminGraph)
+                StartNavigationDestination.Worker -> navController.navigate(WorkerDestination)
+                StartNavigationDestination.Auth -> navController.navigate(SignInDestination)
+                StartNavigationDestination.Loading -> {}
+            }
         }
-        )
         login(navController)
         admin(
             navController = navController,
