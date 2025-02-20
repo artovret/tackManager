@@ -14,13 +14,12 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 
-sealed class TaskFilter(open val displayName: String) {
-    data object None : TaskFilter("Все")
-    data object Urgent : TaskFilter("Срочные")
-    data object Planned : TaskFilter("Плановые")
-    data object Optional : TaskFilter("Доп. задачи")
+sealed class TaskFilter(open val id: String, open val displayName: String) {
+    data object None : TaskFilter("all", "Все")
+    data object Urgent : TaskFilter("urgent", "Срочные")
+    data object Planned : TaskFilter("planned", "Плановые")
+    data object Optional : TaskFilter("optional", "Доп. задачи")
 }
-
 
 @Immutable
 data class FilterButtonState(
@@ -55,10 +54,14 @@ class AdminTaskListViewModel(
     private fun loadTasks() {
         viewModelScope.launch {
             val tasks = getTasksForWorkerUseCase(workerId)
-            _uiState.update {
-                it.copy(
+            _uiState.update { currentState ->
+                currentState.copy(
                     tasks = tasks,
-                    filteredTasks = tasks
+                    filteredTasks = tasks,
+                    filterButtonStates = computeFilterButtonStates(
+                        selected = currentState.selectedFilter,
+                        available = currentState.availableFilters
+                    )
                 )
             }
         }
@@ -96,16 +99,26 @@ class AdminTaskListViewModel(
 
     fun setFilter(filter: TaskFilter) {
         _uiState.update { current ->
-            val newFilteredTasks = when (filter) {
+            val newFilter = if (filter == current.selectedFilter) {
+                TaskFilter.None
+            } else {
+                filter
+            }
+
+            val newFilteredTasks = when (newFilter) {
                 TaskFilter.None -> current.tasks
                 else -> current.tasks.filter { task ->
-                    task.status.equals(filter.displayName, ignoreCase = true)
+                    task.status.equals(newFilter.id, ignoreCase = true)
                 }
             }
 
             current.copy(
-                selectedFilter = filter,
-                filteredTasks = newFilteredTasks
+                selectedFilter = newFilter,
+                filteredTasks = newFilteredTasks,
+                filterButtonStates = computeFilterButtonStates(
+                    selected = newFilter,
+                    available = current.availableFilters
+                )
             )
         }
     }
