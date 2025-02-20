@@ -7,9 +7,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
-import com.titixoid.domain.models.StartNavigationDestination
 import com.titixoid.taskmanager.ui.login.navigation.SignInDestination
 import com.titixoid.taskmanager.ui.login.navigation.login
+import com.titixoid.taskmanager.ui.start.StartNavigationDestination
 import com.titixoid.taskmanager.ui.start.navigation.AdminGraph
 import com.titixoid.taskmanager.ui.start.navigation.StartDestination
 import com.titixoid.taskmanager.ui.start.navigation.admin

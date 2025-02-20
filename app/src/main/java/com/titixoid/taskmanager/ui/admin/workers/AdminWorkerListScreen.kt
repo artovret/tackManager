@@ -28,7 +28,7 @@ import com.titixoid.taskmanager.ui.widgets.StatusBarInsetsSpacer
 @Composable
 fun AdminWorkerListScreen(
     uiState: AdminWorkerListUiState,
-    onWorkerClick: (Int) -> Unit,
+    onWorkerClick: (String) -> Unit,
 ) {
     BackgroundColumn {
         StatusBarInsetsSpacer()

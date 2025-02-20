@@ -5,14 +5,14 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.titixoid.data.models.UserDao
 import com.titixoid.data.models.toDomainUser
 import com.titixoid.domain.models.User
-import com.titixoid.domain.repository.AuthRepository
+import com.titixoid.domain.repository.UserRepository
 import kotlinx.coroutines.tasks.await
 
-class FirebaseAuthRepository(
+class FirebaseUserRepository(
     private val firebaseAuth: FirebaseAuth,
     private val firestore: FirebaseFirestore,
     private val authTokenDataStore: AuthTokenDataStore
-) : AuthRepository {
+) : UserRepository {
 
     override suspend fun signIn(login: String, password: String): User? {
         return try {
@@ -23,7 +23,9 @@ class FirebaseAuthRepository(
 
             if (snapshot.isEmpty) return null
 
-            val userDao = snapshot.documents[0].toObject(UserDao::class.java) ?: return null
+
+            val document = snapshot.documents[0]
+            val userDao = document.toObject(UserDao::class.java) ?: return null
 
             val authResult =
                 firebaseAuth.signInWithEmailAndPassword(userDao.email, password).await()
@@ -36,11 +38,12 @@ class FirebaseAuthRepository(
                 authTokenDataStore.saveAuthToken(token)
             }
 
-            userDao.toDomainUser()
+            userDao.toDomainUser(document.id)
         } catch (e: Exception) {
             null
         }
     }
+
 
     override suspend fun checkAndRefreshAuth(): Boolean {
         val currentUser = firebaseAuth.currentUser ?: return false
@@ -66,6 +69,16 @@ class FirebaseAuthRepository(
         } catch (e: Exception) {
             e.printStackTrace()
             null
+        }
+    }
+
+    override suspend fun getAllUsers(): List<User> {
+        val snapshot = firestore.collection("users")
+            .get()
+            .await()
+
+        return snapshot.documents.mapNotNull { doc ->
+            doc.toObject(UserDao::class.java)?.toDomainUser(doc.id)
         }
     }
 }

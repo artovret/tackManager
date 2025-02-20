@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.titixoid.domain.models.StartNavigationDestination
+import com.titixoid.taskmanager.ui.start.StartNavigationDestination
 import com.titixoid.taskmanager.ui.start.StartScreen
 import com.titixoid.taskmanager.ui.start.StartScreenViewModel
 import kotlinx.serialization.Serializable

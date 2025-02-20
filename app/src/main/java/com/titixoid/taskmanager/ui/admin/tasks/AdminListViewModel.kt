@@ -4,10 +4,14 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.titixoid.domain.models.Task
+import com.titixoid.domain.usecases.GetTasksForWorkerUseCase
 import com.titixoid.taskmanager.ui.theme.Typography
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 
 sealed class TaskFilter(open val displayName: String) {
@@ -17,13 +21,6 @@ sealed class TaskFilter(open val displayName: String) {
     data object Optional : TaskFilter("Доп. задачи")
 }
 
-@Immutable
-data class Task(
-    val id: Int,
-    val title: String,
-    val description: String,
-    val filter: TaskFilter
-)
 
 @Immutable
 data class FilterButtonState(
@@ -46,31 +43,32 @@ data class AdminTaskListUiState(
     val filterButtonStates: List<FilterButtonState> = emptyList()
 )
 
-class AdminTaskListViewModel : ViewModel() {
-    private val initialTasks = listOf(
-        Task(1, "Срочная задача 1", "Описание срочной задачи 1", TaskFilter.Urgent),
-        Task(2, "Плановая задача 1", "Описание плановой задачи 1", TaskFilter.Planned),
-        Task(3, "Опциональная задача 1", "Описание опциональной задачи 1", TaskFilter.Optional),
-        Task(4, "Срочная задача 2", "Описание срочной задачи 2", TaskFilter.Urgent),
-        Task(5, "Плановая задача 2", "Описание плановой задачи 2", TaskFilter.Planned),
-        Task(6, "Опциональная задача 2", "Описание опциональной задачи 2", TaskFilter.Optional)
-    )
+class AdminTaskListViewModel(
+    private val workerId: String,
+    private val getTasksForWorkerUseCase: GetTasksForWorkerUseCase
+) : ViewModel() {
+
+    init {
+        loadTasks()
+    }
+
+    private fun loadTasks() {
+        viewModelScope.launch {
+            val tasks = getTasksForWorkerUseCase(workerId)
+            _uiState.update {
+                it.copy(
+                    tasks = tasks,
+                    filteredTasks = tasks
+                )
+            }
+        }
+    }
 
     private val selectedBackgroundColor = Color.White
     private val unselectedBackgroundColor = Color.LightGray
     private val buttonTextColor = Color.Black
 
-    private val _uiState = MutableStateFlow(
-        AdminTaskListUiState(
-            tasks = initialTasks,
-            selectedFilter = TaskFilter.None,
-            filteredTasks = initialTasks,
-            filterButtonStates = computeFilterButtonStates(
-                TaskFilter.None,
-                listOf(TaskFilter.Urgent, TaskFilter.Planned, TaskFilter.Optional)
-            )
-        )
-    )
+    private val _uiState = MutableStateFlow(AdminTaskListUiState())
     val uiState = _uiState.asStateFlow()
 
     private fun computeFilterButtonStates(
@@ -98,19 +96,18 @@ class AdminTaskListViewModel : ViewModel() {
 
     fun setFilter(filter: TaskFilter) {
         _uiState.update { current ->
-            val newFilter = if (current.selectedFilter == filter) TaskFilter.None else filter
-            val newFilteredTasks = if (newFilter == TaskFilter.None) {
-                current.tasks
-            } else {
-                current.tasks.filter { it.filter == newFilter }
+            val newFilteredTasks = when (filter) {
+                TaskFilter.None -> current.tasks
+                else -> current.tasks.filter { task ->
+                    task.status.equals(filter.displayName, ignoreCase = true)
+                }
             }
-            val newFilterButtonStates =
-                computeFilterButtonStates(newFilter, current.availableFilters)
+
             current.copy(
-                selectedFilter = newFilter,
-                filteredTasks = newFilteredTasks,
-                filterButtonStates = newFilterButtonStates
+                selectedFilter = filter,
+                filteredTasks = newFilteredTasks
             )
         }
     }
+
 }

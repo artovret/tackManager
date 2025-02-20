@@ -3,10 +3,10 @@ package com.titixoid.domain.usecases
 import com.titixoid.domain.models.User
 import com.titixoid.domain.repository.UserRepository
 
-class SignInUseCase(
+class GetAllUsersUseCase(
     private val userRepository: UserRepository
 ) {
-    suspend operator fun invoke(login: String, password: String): User? {
-        return userRepository.signIn(login, password)
+    suspend operator fun invoke(): List<User> {
+        return userRepository.getAllUsers()
     }
 }

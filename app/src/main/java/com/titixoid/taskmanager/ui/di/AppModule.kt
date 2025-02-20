@@ -1,5 +1,6 @@
 package com.titixoid.taskmanager.ui.di
 
+import com.titixoid.taskmanager.ui.admin.tasks.AdminTaskListViewModel
 import com.titixoid.taskmanager.ui.admin.workers.AdminWorkerListViewModel
 import com.titixoid.taskmanager.ui.login.SignInViewModel
 import com.titixoid.taskmanager.ui.start.StartScreenViewModel
@@ -12,5 +13,11 @@ val appModule = module {
     viewModel { SignInViewModel(get()) }
     viewModel { StartScreenViewModel(get()) }
     viewModel { WorkerTaskListViewModel() }
-    viewModel { AdminWorkerListViewModel() }
+    viewModel { AdminWorkerListViewModel(get(), get()) }
+    viewModel { (workerId: String) ->
+        AdminTaskListViewModel(
+            workerId = workerId,
+            get()
+        )
+    }
 }

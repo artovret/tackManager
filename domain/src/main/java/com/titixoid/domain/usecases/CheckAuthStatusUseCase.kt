@@ -1,15 +1,15 @@
 package com.titixoid.domain.usecases
 
 import com.titixoid.domain.models.AuthStatus
-import com.titixoid.domain.repository.AuthRepository
+import com.titixoid.domain.repository.UserRepository
 
 
 class CheckAuthStatusUseCase(
-    private val authRepository: AuthRepository
+    private val userRepository: UserRepository
 ) {
     suspend operator fun invoke(): AuthStatus {
-        val isAuth = authRepository.checkAndRefreshAuth()
-        val role = if (isAuth) authRepository.getUserRole() else null
+        val isAuth = userRepository.checkAndRefreshAuth()
+        val role = if (isAuth) userRepository.getUserRole() else null
         return AuthStatus(isAuthenticated = isAuth, role = role)
     }
 }

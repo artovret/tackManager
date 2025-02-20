@@ -11,10 +11,11 @@ data class UserDao(
     var role: String = ""
 )
 
-fun UserDao.toDomainUser(): User {
+fun UserDao.toDomainUser(id: String): User {
     return User(
+        id = id,
         firstName = this.firstName,
         lastName = this.lastName,
-        role = this.role,
+        role = this.role
     )
 }
