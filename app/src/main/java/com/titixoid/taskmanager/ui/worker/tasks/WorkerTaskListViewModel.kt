@@ -13,7 +13,7 @@ sealed class TaskFilter(open val displayName: String) {
     data object None : TaskFilter("Все")
     data object Urgent : TaskFilter("Срочные")
     data object Planned : TaskFilter("Плановые")
-    data object Optional : TaskFilter("Доп. задачи")
+    data object Optional : TaskFilter("Прочее")
 }
 
 @Immutable

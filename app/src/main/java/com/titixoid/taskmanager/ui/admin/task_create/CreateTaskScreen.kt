@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,17 +13,17 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.unit.dp
 import com.titixoid.taskmanager.ui.theme.Gradients
@@ -44,16 +45,6 @@ fun CreateTaskScreen(
     onCancel: () -> Unit,
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
-        IconButton(
-            onClick = onCancel,
-            modifier = Modifier.padding(16.dp)
-        ) {
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = "Назад",
-                tint = primaryWhite
-            )
-        }
 
         Box(
             modifier = Modifier
@@ -84,6 +75,7 @@ fun CreateTaskScreen(
             ) {
                 LabeledInputSection(
                     label = "Название",
+                    textColor = primaryWhite,
                     value = uiState.title,
                     onValueChange = onTitleChange,
                     placeholder = "Введите название"
@@ -94,25 +86,25 @@ fun CreateTaskScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 200.dp)
+                .padding(top = 300.dp)
                 .background(
                     color = primaryWhite,
                     shape = RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp)
                 )
-                .padding(16.dp)
+                .padding(30.dp)
         ) {
             Spacer(modifier = Modifier.height(16.dp))
 
             LabeledInputSection(
                 label = "Описание",
+                textColor = primaryText,
                 value = uiState.description,
                 onValueChange = onDescriptionChange,
                 placeholder = "Введите описание",
                 isMultiline = true
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
-
+            Spacer(modifier = Modifier.weight(1f))
             Text(
                 "Статус",
                 style = Typography.labelSmall,
@@ -123,17 +115,45 @@ fun CreateTaskScreen(
                 onStatusSelected = onStatusChange
             )
 
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.height(24.dp))
+//            Button(
+//                onClick = onCreateTask,
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .height(56.dp),
+//                colors = ButtonDefaults.buttonColors(containerColor = gradientTop),
+//                shape = RoundedCornerShape(cornerRadius8)
+//            ) {
+//                Text("Создать задачу")
+//            }
 
             Button(
                 onClick = onCreateTask,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(56.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = gradientTop),
-                shape = RoundedCornerShape(cornerRadius8)
+                    .height(70.dp),
+                shape = RoundedCornerShape(percent = 50),
+                contentPadding = PaddingValues(0.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Transparent
+                ),
             ) {
-                Text("Создать задачу")
+                Box(
+                    modifier = Modifier
+                        .background(
+                            brush = Gradients.MainGradient,
+                            shape = RoundedCornerShape(percent = 50)
+                        )
+                        .fillMaxWidth()
+                        .padding(8.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                            text = "Создать задачу",
+                            style = Typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.background
+                        )
+                }
             }
         }
     }
@@ -142,6 +162,7 @@ fun CreateTaskScreen(
 @Composable
 private fun LabeledInputSection(
     label: String,
+    textColor: Color,
     value: String,
     onValueChange: (String) -> Unit,
     placeholder: String,
@@ -151,6 +172,7 @@ private fun LabeledInputSection(
         Text(
             text = label,
             style = Typography.labelSmall,
+            color = textColor.copy(alpha = 0.6f),
             modifier = Modifier.padding(bottom = 8.dp)
         )
 
@@ -180,7 +202,7 @@ private fun LabeledInputSection(
                                 Text(
                                     text = placeholder,
                                     style = Typography.headlineLarge,
-                                    color = primaryText.copy(alpha = 0.8f)
+                                    color = textColor.copy(alpha = 0.3f)
                                 )
                             }
                             innerTextField()
@@ -189,7 +211,7 @@ private fun LabeledInputSection(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(1.dp)
-                                .background(primaryText.copy(alpha = 0.3f))
+                                .background(primaryWhite.copy(alpha = 0.3f))
                         )
                     }
                 }
@@ -218,7 +240,7 @@ private fun StatusSelector(
             onClick = { onStatusSelected("planned") }
         )
         StatusButton(
-            text = "Доп. задача",
+            text = "Прочее",
             isSelected = selectedStatus == "optional",
             onClick = { onStatusSelected("optional") }
         )

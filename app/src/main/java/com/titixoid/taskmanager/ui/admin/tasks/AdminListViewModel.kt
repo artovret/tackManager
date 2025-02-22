@@ -21,7 +21,7 @@ enum class AdminTaskFilter(val id: String, val displayName: String) {
     None("", "Все"),
     Urgent("urgent", "Срочные"),
     Planned("planned", "Плановые"),
-    Optional("optional", "Доп. задачи")
+    Optional("optional", "Прочее")
 }
 
 @Immutable
