@@ -12,14 +12,17 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.unit.dp
 import com.titixoid.taskmanager.ui.theme.Gradients
@@ -27,6 +30,7 @@ import com.titixoid.taskmanager.ui.theme.Typography
 import com.titixoid.taskmanager.ui.theme.cornerRadius8
 import com.titixoid.taskmanager.ui.theme.gradientTop
 import com.titixoid.taskmanager.ui.theme.primaryText
+import com.titixoid.taskmanager.ui.theme.primaryWhite
 import com.titixoid.taskmanager.ui.theme.secondaryGray
 import com.titixoid.taskmanager.ui.theme.unselectedButton
 
@@ -39,71 +43,50 @@ fun CreateTaskScreen(
     onCreateTask: () -> Unit,
     onCancel: () -> Unit,
 ) {
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        // Градиентный фон
+    Box(modifier = Modifier.fillMaxSize()) {
+        IconButton(
+            onClick = onCancel,
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                contentDescription = "Назад",
+                tint = primaryWhite
+            )
+        }
+
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Gradients.MainGradient)
         )
+
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
-            Row(
+            Box(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
+                contentAlignment = Alignment.Center
             ) {
                 Text(
                     "Создание задачи",
-                    style = Typography.titleSmall.copy(color = Color.White)
+                    style = Typography.titleSmall.copy(color = primaryWhite)
                 )
             }
+
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 20.dp)
+                    .padding(top = 36.dp)
             ) {
-                Spacer(modifier = Modifier.height(36.dp))
-                Text(
-                    "Название",
-                    style = Typography.labelSmall.copy(color = Color.White),
-                    modifier = Modifier.padding(bottom = 8.dp)
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                BasicTextField(
+                LabeledInputSection(
+                    label = "Название",
                     value = uiState.title,
                     onValueChange = onTitleChange,
-                    modifier = Modifier.fillMaxWidth(),
-                    textStyle = Typography.headlineLarge.copy(color = Color.White),
-                    cursorBrush = SolidColor(Color.White),
-                    decorationBox = { innerTextField ->
-                        Column {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(bottom = 8.dp)
-                            ) {
-                                if (uiState.title.isEmpty()) {
-                                    Text(
-                                        text = "Введите название",
-                                        style = Typography.headlineLarge,
-                                        color = Color.White.copy(alpha = 0.8f)
-                                    )
-                                }
-                                innerTextField()
-                            }
-                            Spacer(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(1.dp)
-                                    .background(Color.White.copy(alpha = 0.3f))
-                            )
-                        }
-                    }
+                    placeholder = "Введите название"
                 )
             }
         }
@@ -111,43 +94,33 @@ fun CreateTaskScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 250.dp)
+                .padding(top = 200.dp)
                 .background(
-                    color = Color.White,
+                    color = primaryWhite,
                     shape = RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp)
                 )
-                .padding(horizontal = 16.dp, vertical = 24.dp)
+                .padding(16.dp)
         ) {
-
             Spacer(modifier = Modifier.height(16.dp))
 
-            Text(
-                "Описание",
-                style = Typography.labelSmall,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-            OutlinedTextField(
+            LabeledInputSection(
+                label = "Описание",
                 value = uiState.description,
                 onValueChange = onDescriptionChange,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(120.dp),
-                colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedBorderColor = secondaryGray,
-                    focusedBorderColor = gradientTop
-                )
+                placeholder = "Введите описание",
+                isMultiline = true
             )
 
             Spacer(modifier = Modifier.height(24.dp))
 
             Text(
-                "Приоритет",
+                "Статус",
                 style = Typography.labelSmall,
                 modifier = Modifier.padding(bottom = 8.dp)
             )
-            PrioritySelector(
-                selectedPriority = uiState.status,
-                onPrioritySelected = onStatusChange
+            StatusSelector(
+                selectedStatus = uiState.status,
+                onStatusSelected = onStatusChange
             )
 
             Spacer(modifier = Modifier.weight(1f))
@@ -167,34 +140,93 @@ fun CreateTaskScreen(
 }
 
 @Composable
-private fun PrioritySelector(
-    selectedPriority: String,
-    onPrioritySelected: (String) -> Unit
+private fun LabeledInputSection(
+    label: String,
+    value: String,
+    onValueChange: (String) -> Unit,
+    placeholder: String,
+    isMultiline: Boolean = false
+) {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Text(
+            text = label,
+            style = Typography.labelSmall,
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
+
+        if (isMultiline) {
+            OutlinedTextField(
+                value = value,
+                onValueChange = onValueChange,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(120.dp),
+                colors = OutlinedTextFieldDefaults.colors(
+                    unfocusedBorderColor = secondaryGray,
+                    focusedBorderColor = gradientTop
+                )
+            )
+        } else {
+            BasicTextField(
+                value = value,
+                onValueChange = onValueChange,
+                modifier = Modifier.fillMaxWidth(),
+                textStyle = Typography.headlineLarge.copy(color = primaryText),
+                cursorBrush = SolidColor(gradientTop),
+                decorationBox = { innerTextField ->
+                    Column {
+                        Box(modifier = Modifier.fillMaxWidth()) {
+                            if (value.isEmpty()) {
+                                Text(
+                                    text = placeholder,
+                                    style = Typography.headlineLarge,
+                                    color = primaryText.copy(alpha = 0.8f)
+                                )
+                            }
+                            innerTextField()
+                        }
+                        Spacer(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(1.dp)
+                                .background(primaryText.copy(alpha = 0.3f))
+                        )
+                    }
+                }
+            )
+        }
+    }
+}
+
+@Composable
+private fun StatusSelector(
+    selectedStatus: String,
+    onStatusSelected: (String) -> Unit
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        PriorityButton(
+        StatusButton(
             text = "Срочно",
-            isSelected = selectedPriority == "urgent",
-            onClick = { onPrioritySelected("urgent") }
+            isSelected = selectedStatus == "urgent",
+            onClick = { onStatusSelected("urgent") }
         )
-        PriorityButton(
+        StatusButton(
             text = "Планово",
-            isSelected = selectedPriority == "planned",
-            onClick = { onPrioritySelected("planned") }
+            isSelected = selectedStatus == "planned",
+            onClick = { onStatusSelected("planned") }
         )
-        PriorityButton(
+        StatusButton(
             text = "Доп. задача",
-            isSelected = selectedPriority == "optional",
-            onClick = { onPrioritySelected("optional") }
+            isSelected = selectedStatus == "optional",
+            onClick = { onStatusSelected("optional") }
         )
     }
 }
 
 @Composable
-private fun PriorityButton(
+private fun StatusButton(
     text: String,
     isSelected: Boolean,
     onClick: () -> Unit
@@ -208,7 +240,7 @@ private fun PriorityButton(
     ) {
         Text(
             text = text,
-            color = if (isSelected) Color.White else primaryText,
+            color = if (isSelected) primaryWhite else primaryText,
             style = Typography.bodySmall
         )
     }
