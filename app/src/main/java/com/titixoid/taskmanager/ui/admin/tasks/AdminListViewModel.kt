@@ -8,22 +8,25 @@ import androidx.lifecycle.viewModelScope
 import com.titixoid.domain.models.Task
 import com.titixoid.domain.usecases.GetTasksForWorkerUseCase
 import com.titixoid.taskmanager.ui.theme.Typography
+import com.titixoid.taskmanager.ui.theme.primaryText
+import com.titixoid.taskmanager.ui.theme.primaryWhite
+import com.titixoid.taskmanager.ui.theme.unselectedButton
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 
-sealed class TaskFilter(open val id: String, open val displayName: String) {
-    data object None : TaskFilter("all", "Все")
-    data object Urgent : TaskFilter("urgent", "Срочные")
-    data object Planned : TaskFilter("planned", "Плановые")
-    data object Optional : TaskFilter("optional", "Доп. задачи")
+enum class AdminTaskFilter(val id: String, val displayName: String) {
+    None("", "Все"),
+    Urgent("urgent", "Срочные"),
+    Planned("planned", "Плановые"),
+    Optional("optional", "Доп. задачи")
 }
 
 @Immutable
-data class FilterButtonState(
-    val filter: TaskFilter,
+data class AdminFilterButtonState(
+    val filter: AdminTaskFilter,
     val backgroundColor: Color,
     val textColor: Color,
     val textStyle: TextStyle
@@ -32,20 +35,26 @@ data class FilterButtonState(
 @Immutable
 data class AdminTaskListUiState(
     val tasks: List<Task> = emptyList(),
-    val selectedFilter: TaskFilter = TaskFilter.None,
-    val availableFilters: List<TaskFilter> = listOf(
-        TaskFilter.Urgent,
-        TaskFilter.Planned,
-        TaskFilter.Optional
-    ),
+    val selectedFilter: AdminTaskFilter = AdminTaskFilter.None,
     val filteredTasks: List<Task> = emptyList(),
-    val filterButtonStates: List<FilterButtonState> = emptyList()
-)
+    val filterButtonStates: List<AdminFilterButtonState> = emptyList()
+) {
+    companion object {
+        val DEFAULT_FILTERS = listOf(
+            AdminTaskFilter.Urgent,
+            AdminTaskFilter.Planned,
+            AdminTaskFilter.Optional
+        )
+    }
+}
 
 class AdminTaskListViewModel(
     private val workerId: String,
     private val getTasksForWorkerUseCase: GetTasksForWorkerUseCase
 ) : ViewModel() {
+
+    private val _uiState = MutableStateFlow(AdminTaskListUiState())
+    val uiState = _uiState.asStateFlow()
 
     init {
         loadTasks()
@@ -54,73 +63,47 @@ class AdminTaskListViewModel(
     private fun loadTasks() {
         viewModelScope.launch {
             val tasks = getTasksForWorkerUseCase(workerId)
-            _uiState.update { currentState ->
-                currentState.copy(
+            updateState {
+                it.copy(
                     tasks = tasks,
                     filteredTasks = tasks,
-                    filterButtonStates = computeFilterButtonStates(
-                        selected = currentState.selectedFilter,
-                        available = currentState.availableFilters
-                    )
+                    filterButtonStates = createFilterButtonStates(AdminTaskFilter.None)
                 )
             }
         }
     }
 
-    private val selectedBackgroundColor = Color.White
-    private val unselectedBackgroundColor = Color.LightGray
-    private val buttonTextColor = Color.Black
-
-    private val _uiState = MutableStateFlow(AdminTaskListUiState())
-    val uiState = _uiState.asStateFlow()
-
-    private fun computeFilterButtonStates(
-        selected: TaskFilter,
-        available: List<TaskFilter>
-    ): List<FilterButtonState> {
-        return available.map { filter ->
-            if (filter == selected) {
-                FilterButtonState(
-                    filter,
-                    selectedBackgroundColor,
-                    buttonTextColor,
-                    Typography.labelLarge
-                )
-            } else {
-                FilterButtonState(
-                    filter,
-                    unselectedBackgroundColor,
-                    buttonTextColor,
-                    Typography.labelSmall
-                )
-            }
-        }
-    }
-
-    fun setFilter(filter: TaskFilter) {
-        _uiState.update { current ->
-            val newFilter = if (filter == current.selectedFilter) {
-                TaskFilter.None
-            } else {
-                filter
-            }
-
-            val newFilteredTasks = when (newFilter) {
-                TaskFilter.None -> current.tasks
-                else -> current.tasks.filter { task ->
-                    task.status.equals(newFilter.id, ignoreCase = true)
-                }
-            }
-
-            current.copy(
+    fun setFilter(filter: AdminTaskFilter) {
+        updateState { currentState ->
+            val newFilter =
+                if (filter == currentState.selectedFilter) AdminTaskFilter.None else filter
+            currentState.copy(
                 selectedFilter = newFilter,
-                filteredTasks = newFilteredTasks,
-                filterButtonStates = computeFilterButtonStates(
-                    selected = newFilter,
-                    available = current.availableFilters
-                )
+                filteredTasks = filterTasks(currentState.tasks, newFilter),
+                filterButtonStates = createFilterButtonStates(newFilter)
             )
         }
     }
 
+    private fun filterTasks(tasks: List<Task>, filter: AdminTaskFilter): List<Task> {
+        return when (filter) {
+            AdminTaskFilter.None -> tasks
+            else -> tasks.filter { it.status.equals(filter.id, ignoreCase = true) }
+        }
+    }
+
+    private fun createFilterButtonStates(selectedFilter: AdminTaskFilter): List<AdminFilterButtonState> {
+        return AdminTaskListUiState.DEFAULT_FILTERS.map { filter ->
+            AdminFilterButtonState(
+                filter = filter,
+                backgroundColor = if (filter == selectedFilter) primaryWhite else unselectedButton,
+                textColor = primaryText,
+                textStyle = if (filter == selectedFilter) Typography.labelLarge else Typography.labelSmall
+            )
+        }
+    }
+
+    private fun updateState(update: (AdminTaskListUiState) -> AdminTaskListUiState) {
+        _uiState.update(update)
+    }
 }

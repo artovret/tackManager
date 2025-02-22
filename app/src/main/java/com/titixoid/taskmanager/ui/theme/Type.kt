@@ -30,24 +30,18 @@ val Typography = Typography(
         fontWeight = FontWeight.SemiBold,
         fontSize = 46.17.sp,
         color = primaryTitleText
-//        lineHeight = 28.sp,
-//        letterSpacing = 0.sp
     ),
     titleSmall = TextStyle(
         fontFamily = RobotoFontFamily,
         fontWeight = FontWeight.Normal,
         fontSize = 23.09.sp,
         color = secondTitleText
-//        lineHeight = 24.sp,
-//        letterSpacing = 0.5.sp
     ),
     bodyLarge = TextStyle(
         fontFamily = RobotoFontFamily,
         fontWeight = FontWeight.SemiBold,
         fontSize = 22.42.sp,
         color = primaryText
-//        lineHeight = 24.sp,
-//        letterSpacing = 0.5.sp
     ),
     labelLarge = TextStyle(
         fontFamily = RobotoFontFamily,
@@ -66,7 +60,11 @@ val Typography = Typography(
         fontWeight = FontWeight.Normal,
         fontSize = 16.48.sp,
         color = secondText
-//        lineHeight = 24.sp,
-//        letterSpacing = 0.5.sp
+    ),
+    headlineLarge = TextStyle(
+        fontFamily = RobotoFontFamily,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 32.sp,
+        color = secondText
     )
 )

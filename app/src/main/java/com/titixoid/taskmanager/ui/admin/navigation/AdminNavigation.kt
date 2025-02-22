@@ -7,6 +7,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.toRoute
+import com.titixoid.taskmanager.ui.admin.task_create.CreateTaskScreen
+import com.titixoid.taskmanager.ui.admin.task_create.CreateTaskViewModel
 import com.titixoid.taskmanager.ui.admin.tasks.AdminTaskListScreen
 import com.titixoid.taskmanager.ui.admin.tasks.AdminTaskListViewModel
 import com.titixoid.taskmanager.ui.admin.workers.AdminWorkerListScreen
@@ -50,17 +52,28 @@ fun NavGraphBuilder.admin(
         composable<TaskListDestination> { backStackEntry ->
             val args = backStackEntry.toRoute<TaskListDestination>()
             val workerId = args.workerId
-
             val viewModel: AdminTaskListViewModel = koinViewModel(parameters = {
                 parametersOf(args.workerId)
             })
-
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
             AdminTaskListScreen(
                 uiState = uiState,
                 onFilterSelected = viewModel::setFilter,
-                onTaskClick = {}
+                onAddClicked = { navController.navigate(TaskCreateDestination) }
+            )
+        }
+
+        composable<TaskCreateDestination> {
+            val viewModel: CreateTaskViewModel = koinViewModel()
+            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+            CreateTaskScreen(
+                uiState = uiState,
+                onTitleChange = {},
+                onDescriptionChange = {},
+                onStatusChange = {},
+                onCreateTask = {},
+                onCancel = {}
             )
         }
     }

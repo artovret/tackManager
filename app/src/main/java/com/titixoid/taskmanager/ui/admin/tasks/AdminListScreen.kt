@@ -27,10 +27,11 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.titixoid.domain.models.Task
 import com.titixoid.taskmanager.R
 import com.titixoid.taskmanager.ui.theme.Typography
+import com.titixoid.taskmanager.ui.theme.background
 import com.titixoid.taskmanager.ui.theme.primaryText
+import com.titixoid.taskmanager.ui.theme.primaryTitleText
 import com.titixoid.taskmanager.ui.theme.secondText
 import com.titixoid.taskmanager.ui.theme.space16
 import com.titixoid.taskmanager.ui.theme.space32
@@ -42,8 +43,8 @@ import com.titixoid.taskmanager.ui.widgets.StatusBarInsetsSpacer
 @Composable
 fun AdminTaskListScreen(
     uiState: AdminTaskListUiState,
-    onFilterSelected: (TaskFilter) -> Unit,
-    onTaskClick: (Task) -> Unit
+    onFilterSelected: (AdminTaskFilter) -> Unit,
+    onAddClicked: () -> Unit,
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
     BackgroundColumn {
@@ -127,7 +128,7 @@ fun AdminTaskListScreen(
                                 color = Color.White,
                                 shape = RoundedCornerShape(8.dp)
                             )
-                            .clickable { onTaskClick(task) }
+                            .clickable {}
                             .padding(16.dp)
                     ) {
                         Column {
@@ -151,14 +152,16 @@ fun AdminTaskListScreen(
         BottomBarInsetsSpacer()
     }
         FloatingActionButton(
-            onClick = {},
+            onClick = onAddClicked,
             modifier = Modifier
                 .align(Alignment.BottomEnd)
-                .padding(32.dp)
+                .padding(32.dp),
+            containerColor = background
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_add_task),
                 contentDescription = "Добавить задачу",
+                tint = primaryTitleText,
                 modifier = Modifier.height(32.dp)
             )
         }

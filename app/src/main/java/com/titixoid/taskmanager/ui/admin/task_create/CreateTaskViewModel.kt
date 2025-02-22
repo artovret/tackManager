@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.titixoid.domain.models.Task
 import com.titixoid.domain.usecases.CreateTaskUseCase
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
 data class CreateTaskUiState(
@@ -18,6 +19,8 @@ data class CreateTaskUiState(
 class CreateTaskViewModel(
     private val createTaskUseCase: CreateTaskUseCase
 ) : ViewModel() {
+    private val _uiState = MutableStateFlow(CreateTaskUiState())
+    val uiState = _uiState
 
     fun createTask(
         title: String,

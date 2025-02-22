@@ -10,6 +10,7 @@ import com.titixoid.data.repository.FirebaseUserRepository
 import com.titixoid.domain.repository.TaskRepository
 import com.titixoid.domain.repository.UserRepository
 import com.titixoid.domain.usecases.CheckAuthStatusUseCase
+import com.titixoid.domain.usecases.CreateTaskUseCase
 import com.titixoid.domain.usecases.GetAllUsersUseCase
 import com.titixoid.domain.usecases.GetTasksForWorkerUseCase
 import com.titixoid.domain.usecases.SignInUseCase
@@ -31,5 +32,6 @@ val dataStoreModule = module {
     factory { CheckAuthStatusUseCase(get()) }
     factory { GetAllUsersUseCase(get()) }
     factory { GetTasksForWorkerUseCase(get()) }
+    factory { CreateTaskUseCase(get()) }
 
 }
