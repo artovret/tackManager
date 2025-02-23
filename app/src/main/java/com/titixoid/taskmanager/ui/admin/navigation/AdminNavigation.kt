@@ -27,7 +27,7 @@ private object WorkersDestination
 data class TaskListDestination(val workerId: String)
 
 @Serializable
-private object TaskCreateDestination
+private class TaskCreateDestination(val workerId: String)
 
 fun NavGraphBuilder.admin(
     navController: NavHostController,
@@ -51,7 +51,6 @@ fun NavGraphBuilder.admin(
         }
         composable<TaskListDestination> { backStackEntry ->
             val args = backStackEntry.toRoute<TaskListDestination>()
-            val workerId = args.workerId
             val viewModel: AdminTaskListViewModel = koinViewModel(parameters = {
                 parametersOf(args.workerId)
             })
@@ -60,32 +59,30 @@ fun NavGraphBuilder.admin(
             AdminTaskListScreen(
                 uiState = uiState,
                 onFilterSelected = viewModel::setFilter,
-                onAddClicked = { navController.navigate(TaskCreateDestination) }
+                onAddClicked = { navController.navigate(TaskCreateDestination(args.workerId)) }
             )
         }
 
-        composable<TaskCreateDestination> {
-            val viewModel: CreateTaskViewModel = koinViewModel()
+        composable<TaskCreateDestination> { backStackEntry ->
+            val args = backStackEntry.toRoute<TaskCreateDestination>()
+            val viewModel: CreateTaskViewModel = koinViewModel(parameters = {
+                parametersOf(args.workerId)
+            })
             val uiState by viewModel.uiState.collectAsStateWithLifecycle()
             CreateTaskScreen(
                 uiState = uiState,
-                onTitleChange = {},
-                onDescriptionChange = {},
-                onStatusChange = {},
-                onCreateTask = {},
+                onTitleChange = viewModel::onTitleChange,
+                onDescriptionChange = viewModel::onDescriptionChange,
+                onStatusChange = viewModel::onStatusChange,
+                onCreateTask = {
+                    viewModel.createTask { isSuccess ->
+                        if (isSuccess) {
+                            navController.popBackStack()
+                        }
+                    }
+                },
                 onCancel = {}
             )
         }
     }
 }
-
-//private fun computeFilterStates(selected: TaskFilter): List<FilterButtonState> {
-//    return (TaskFilter.entries - TaskFilter.None).map {
-//        FilterButtonState(
-//            filter = it,
-//            backgroundColor = if (it == selected) Color.White else Color.LightGray,
-//            textColor = Color.Black,
-//            textStyle = if (it == selected) Typography.labelLarge else Typography.labelSmall
-//        )
-//    }
-//}

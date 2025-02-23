@@ -17,29 +17,45 @@ data class CreateTaskUiState(
 )
 
 class CreateTaskViewModel(
+    private val workerId: String,
     private val createTaskUseCase: CreateTaskUseCase
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow(CreateTaskUiState())
+    private val _uiState = MutableStateFlow(CreateTaskUiState(workerId = workerId))
     val uiState = _uiState
 
-    fun createTask(
-        title: String,
-        description: String,
-        status: String,
-        workerId: String,
-        onResult: (Boolean) -> Unit
-    ) {
+    fun onTitleChange(title: String) {
+        _uiState.value = _uiState.value.copy(title = title)
+    }
+
+    fun onDescriptionChange(description: String) {
+        _uiState.value = _uiState.value.copy(description = description)
+    }
+
+    fun onStatusChange(status: String) {
+        _uiState.value = _uiState.value.copy(status = status)
+    }
+
+    fun createTask(onResult: (Boolean) -> Unit) {
+        _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null)
         viewModelScope.launch {
-            val task = Task(
-                id = "",
-                title = title,
-                description = description,
-                status = status,
-                completed = false,
-                workerId = workerId
-            )
-            val result = createTaskUseCase(task)
-            onResult(result)
+            try {
+                val task = Task(
+                    id = "",
+                    title = _uiState.value.title,
+                    description = _uiState.value.description,
+                    status = _uiState.value.status,
+                    completed = false,
+                    workerId = _uiState.value.workerId
+                )
+                val result = createTaskUseCase(task)
+                _uiState.value = _uiState.value.copy(isLoading = false)
+                onResult(result)
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(
+                    isLoading = false,
+                    errorMessage = e.message ?: "Ошибка при создании задачи"
+                )
+            }
         }
     }
 }

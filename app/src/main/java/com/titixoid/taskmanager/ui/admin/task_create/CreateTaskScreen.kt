@@ -10,12 +10,13 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -25,13 +26,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.titixoid.taskmanager.ui.theme.Gradients
+import com.titixoid.taskmanager.ui.theme.TaskManagerTheme
 import com.titixoid.taskmanager.ui.theme.Typography
-import com.titixoid.taskmanager.ui.theme.cornerRadius8
+import com.titixoid.taskmanager.ui.theme.borderGray
 import com.titixoid.taskmanager.ui.theme.gradientTop
 import com.titixoid.taskmanager.ui.theme.primaryText
 import com.titixoid.taskmanager.ui.theme.primaryWhite
+import com.titixoid.taskmanager.ui.theme.secondTitleText
 import com.titixoid.taskmanager.ui.theme.secondaryGray
 import com.titixoid.taskmanager.ui.theme.unselectedButton
 
@@ -48,9 +52,32 @@ fun CreateTaskScreen(
 
         Box(
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxWidth()
+                .height(400.dp)
                 .background(Gradients.MainGradient)
-        )
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(400.dp)
+                    .align(Alignment.TopStart)
+                    .offset(x = (-200).dp, y = 130.dp)
+                    .background(
+                        color = gradientTop.copy(alpha = 0.4f),
+                        shape = RoundedCornerShape(100)
+                    )
+            )
+
+            Box(
+                modifier = Modifier
+                    .size(400.dp)
+                    .align(Alignment.TopEnd)
+                    .offset(x = 180.dp, y = (-180).dp)
+                    .background(
+                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
+                        shape = RoundedCornerShape(100)
+                    )
+            )
+        }
 
         Column(
             modifier = Modifier
@@ -71,7 +98,7 @@ fun CreateTaskScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 20.dp)
-                    .padding(top = 36.dp)
+                    .padding(top = 56.dp)
             ) {
                 LabeledInputSection(
                     label = "Название",
@@ -97,7 +124,7 @@ fun CreateTaskScreen(
 
             LabeledInputSection(
                 label = "Описание",
-                textColor = primaryText,
+                textColor = secondTitleText,
                 value = uiState.description,
                 onValueChange = onDescriptionChange,
                 placeholder = "Введите описание",
@@ -105,27 +132,14 @@ fun CreateTaskScreen(
             )
 
             Spacer(modifier = Modifier.weight(1f))
-            Text(
-                "Статус",
-                style = Typography.labelSmall,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
+
             StatusSelector(
                 selectedStatus = uiState.status,
                 onStatusSelected = onStatusChange
             )
 
             Spacer(modifier = Modifier.height(24.dp))
-//            Button(
-//                onClick = onCreateTask,
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .height(56.dp),
-//                colors = ButtonDefaults.buttonColors(containerColor = gradientTop),
-//                shape = RoundedCornerShape(cornerRadius8)
-//            ) {
-//                Text("Создать задачу")
-//            }
+
 
             Button(
                 onClick = onCreateTask,
@@ -141,7 +155,7 @@ fun CreateTaskScreen(
                 Box(
                     modifier = Modifier
                         .background(
-                            brush = Gradients.MainGradient,
+                            Gradients.MainGradient,
                             shape = RoundedCornerShape(percent = 50)
                         )
                         .fillMaxWidth()
@@ -182,10 +196,10 @@ private fun LabeledInputSection(
                 onValueChange = onValueChange,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(120.dp),
+                    .height(200.dp),
                 colors = OutlinedTextFieldDefaults.colors(
                     unfocusedBorderColor = secondaryGray,
-                    focusedBorderColor = gradientTop
+                    focusedBorderColor = borderGray
                 )
             )
         } else {
@@ -211,7 +225,7 @@ private fun LabeledInputSection(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(1.dp)
-                                .background(primaryWhite.copy(alpha = 0.3f))
+                                .background(primaryWhite.copy(alpha = 0.9f))
                         )
                     }
                 }
@@ -258,12 +272,31 @@ private fun StatusButton(
         colors = ButtonDefaults.buttonColors(
             containerColor = if (isSelected) gradientTop else unselectedButton
         ),
-        shape = RoundedCornerShape(cornerRadius8)
+        shape = RoundedCornerShape(50.dp)
     ) {
         Text(
             text = text,
             color = if (isSelected) primaryWhite else primaryText,
             style = Typography.bodySmall
+        )
+    }
+}
+
+@Preview(showBackground = true, device = "id:pixel_6_pro")
+@Composable
+fun CreateTaskPreview() {
+    TaskManagerTheme {
+        CreateTaskScreen(
+            uiState = CreateTaskUiState(
+                title = "Новая задача",
+                description = "Описание тестовой задачи",
+                status = "planned"
+            ),
+            onTitleChange = {},
+            onDescriptionChange = {},
+            onStatusChange = {},
+            onCreateTask = {},
+            onCancel = {}
         )
     }
 }
