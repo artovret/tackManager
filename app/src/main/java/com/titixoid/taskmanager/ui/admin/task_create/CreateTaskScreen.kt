@@ -47,8 +47,7 @@ fun CreateTaskScreen(
     onTitleChange: (String) -> Unit,
     onDescriptionChange: (String) -> Unit,
     onStatusChange: (String) -> Unit,
-    onCreateTask: () -> Unit,
-    onCancel: () -> Unit,
+    onCreateTask: () -> Unit
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
 
@@ -298,8 +297,7 @@ fun CreateTaskPreview() {
             onTitleChange = {},
             onDescriptionChange = {},
             onStatusChange = {},
-            onCreateTask = {},
-            onCancel = {}
+            onCreateTask = {}
         )
     }
 }

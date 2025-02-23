@@ -30,13 +30,7 @@ data class TaskListDestination(val workerId: String)
 private class TaskCreateDestination(val workerId: String)
 
 fun NavGraphBuilder.admin(
-    navController: NavHostController,
-    onLoginClicked: () -> Unit,
-    onNavigateToResetPasswordClicked: () -> Unit,
-    onNavigateToRegisterClicked: () -> Unit,
-    onRegisterClicked: () -> Unit,
-    onNavigateBack: () -> Unit,
-    onResetPasswordClicked: () -> Unit
+    navController: NavHostController
 ) {
     navigation<AdminGraph>(startDestination = WorkersDestination) {
         composable<WorkersDestination> {
@@ -80,8 +74,7 @@ fun NavGraphBuilder.admin(
                             navController.popBackStack()
                         }
                     }
-                },
-                onCancel = {}
+                }
             )
         }
     }

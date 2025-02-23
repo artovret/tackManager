@@ -1,9 +1,6 @@
 package com.titixoid.taskmanager.ui
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
@@ -19,13 +16,8 @@ import com.titixoid.taskmanager.ui.worker.tasks.navigation.workerRole
 
 @Composable
 fun TasksNavHost(
-    navController: NavHostController = rememberNavController(),
-    viewModel: MainViewModel = viewModel()
+    navController: NavHostController = rememberNavController()
 ) {
-    val authenticated by viewModel.authenticated.collectAsState()
-    val adminRole by viewModel.admin.collectAsState()
-    val targetDestination = SignInDestination
-
     NavHost(
         navController = navController,
         startDestination = StartDestination
@@ -40,15 +32,7 @@ fun TasksNavHost(
             }
         }
         login(navController)
-        admin(
-            navController = navController,
-            onLoginClicked = {},
-            onNavigateToResetPasswordClicked = {},
-            onNavigateToRegisterClicked = {},
-            onRegisterClicked = {},
-            onNavigateBack = {},
-            onResetPasswordClicked = {}
-        )
+        admin(navController = navController)
         workerRole(onStartClicked = {})
     }
 }
