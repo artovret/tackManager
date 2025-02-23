@@ -13,8 +13,10 @@ import com.titixoid.taskmanager.ui.theme.primaryWhite
 import com.titixoid.taskmanager.ui.theme.unselectedButton
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 
 
 enum class AdminTaskFilter(val id: String, val displayName: String) {
@@ -57,20 +59,22 @@ class AdminTaskListViewModel(
     val uiState = _uiState.asStateFlow()
 
     init {
-        loadTasks()
+        observeTasks()
     }
 
-    private fun loadTasks() {
-        viewModelScope.launch {
-            val tasks = getTasksForWorkerUseCase(workerId)
-            updateState {
-                it.copy(
-                    tasks = tasks,
-                    filteredTasks = tasks,
-                    filterButtonStates = createFilterButtonStates(AdminTaskFilter.None)
-                )
+    private fun observeTasks() {
+        getTasksForWorkerUseCase(workerId)
+            .onEach { tasks ->
+                updateState { currentState ->
+                    currentState.copy(
+                        tasks = tasks,
+                        filteredTasks = filterTasks(tasks, currentState.selectedFilter),
+                        filterButtonStates = createFilterButtonStates(currentState.selectedFilter)
+                    )
+                }
             }
-        }
+            .catch { e -> e.printStackTrace() }
+            .launchIn(viewModelScope)
     }
 
     fun setFilter(filter: AdminTaskFilter) {

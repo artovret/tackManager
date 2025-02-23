@@ -32,11 +32,13 @@ import com.titixoid.taskmanager.ui.theme.Gradients
 import com.titixoid.taskmanager.ui.theme.TaskManagerTheme
 import com.titixoid.taskmanager.ui.theme.Typography
 import com.titixoid.taskmanager.ui.theme.borderGray
+import com.titixoid.taskmanager.ui.theme.descriptionText
 import com.titixoid.taskmanager.ui.theme.gradientTop
 import com.titixoid.taskmanager.ui.theme.primaryText
 import com.titixoid.taskmanager.ui.theme.primaryWhite
 import com.titixoid.taskmanager.ui.theme.secondTitleText
 import com.titixoid.taskmanager.ui.theme.secondaryGray
+import com.titixoid.taskmanager.ui.theme.taskNameText
 import com.titixoid.taskmanager.ui.theme.unselectedButton
 
 @Composable
@@ -165,7 +167,7 @@ fun CreateTaskScreen(
                     Text(
                             text = "Создать задачу",
                             style = Typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.background
+                        color = primaryWhite
                         )
                 }
             }
@@ -197,6 +199,7 @@ private fun LabeledInputSection(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(200.dp),
+                textStyle = Typography.headlineLarge.copy(color = descriptionText),
                 colors = OutlinedTextFieldDefaults.colors(
                     unfocusedBorderColor = secondaryGray,
                     focusedBorderColor = borderGray
@@ -207,8 +210,8 @@ private fun LabeledInputSection(
                 value = value,
                 onValueChange = onValueChange,
                 modifier = Modifier.fillMaxWidth(),
-                textStyle = Typography.headlineLarge.copy(color = primaryText),
-                cursorBrush = SolidColor(gradientTop),
+                textStyle = Typography.headlineLarge.copy(color = taskNameText),
+                cursorBrush = SolidColor(descriptionText),
                 decorationBox = { innerTextField ->
                     Column {
                         Box(modifier = Modifier.fillMaxWidth()) {

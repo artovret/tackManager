@@ -8,7 +8,9 @@ data class UserDao(
     var firstName: String = "",
     var lastName: String = "",
     var password: String = "",
-    var role: String = ""
+    var role: String = "",
+    var taskCount: Int = 0,
+
 )
 
 fun UserDao.toDomainUser(id: String): User {
@@ -16,6 +18,7 @@ fun UserDao.toDomainUser(id: String): User {
         id = id,
         firstName = this.firstName,
         lastName = this.lastName,
-        role = this.role
+        role = this.role,
+        taskCount = this.taskCount,
     )
 }

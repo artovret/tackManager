@@ -4,11 +4,11 @@ import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.titixoid.domain.usecases.GetAllUsersUseCase
-import com.titixoid.domain.usecases.GetTasksForWorkerUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 
 @Immutable
 data class WorkerUiModel(
@@ -24,33 +24,29 @@ data class AdminWorkerListUiState(
 )
 
 class AdminWorkerListViewModel(
-    private val getAllUsersUseCase: GetAllUsersUseCase,
-    private val getTasksForWorkerUseCase: GetTasksForWorkerUseCase,
+    private val getAllUsersUseCase: GetAllUsersUseCase
 ) : ViewModel() {
+
     private val _uiState = MutableStateFlow(AdminWorkerListUiState())
     val uiState = _uiState.asStateFlow()
 
     init {
-        loadWorkers()
+        observeUsers()
     }
 
-    private fun loadWorkers() {
-        viewModelScope.launch {
-            val users = getAllUsersUseCase()
-                .filter { it.role == "worker" }
-
-            _uiState.update { currentState ->
-                currentState.copy(
-                    workers = users.map { user ->
-                        WorkerUiModel(
-                            id = user.id,
-                            firstName = user.firstName,
-                            lastName = user.lastName,
-                            taskCount = getTasksForWorkerUseCase.invoke(user.id).size
-                        )
-                    }
-                )
+    private fun observeUsers() {
+        getAllUsersUseCase()
+            .onEach { users ->
+                val workerUiModels = users.map { user ->
+                    WorkerUiModel(
+                        id = user.id,
+                        firstName = user.firstName,
+                        lastName = user.lastName,
+                        taskCount = user.taskCount
+                    )
+                }
+                _uiState.update { it.copy(workers = workerUiModels) }
             }
-        }
+            .launchIn(viewModelScope)
     }
 }

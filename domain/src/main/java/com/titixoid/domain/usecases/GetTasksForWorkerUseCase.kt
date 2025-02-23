@@ -2,11 +2,12 @@ package com.titixoid.domain.usecases
 
 import com.titixoid.domain.models.Task
 import com.titixoid.domain.repository.TaskRepository
+import kotlinx.coroutines.flow.Flow
 
 class GetTasksForWorkerUseCase(
     private val taskRepository: TaskRepository
 ) {
-    suspend operator fun invoke(workerId: String): List<Task> {
-        return taskRepository.getTasksForWorker(workerId)
+    operator fun invoke(workerId: String): Flow<List<Task>> {
+        return taskRepository.getTasksForWorkerFlow(workerId)
     }
 }

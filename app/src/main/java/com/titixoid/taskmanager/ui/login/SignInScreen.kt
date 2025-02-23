@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -24,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import com.titixoid.taskmanager.ui.theme.Gradients
 import com.titixoid.taskmanager.ui.theme.TaskManagerTheme
 import com.titixoid.taskmanager.ui.theme.Typography
+import com.titixoid.taskmanager.ui.theme.primaryWhite
 import com.titixoid.taskmanager.ui.theme.space16
 import com.titixoid.taskmanager.ui.theme.space32
 import com.titixoid.taskmanager.ui.theme.space40
@@ -90,7 +92,7 @@ fun SignInScreen(
         Button(
             onClick = onLoginClicked,
             modifier = Modifier
-                .fillMaxWidth()
+                .width(300.dp)
                 .height(70.dp),
             shape = RoundedCornerShape(percent = 50),
             contentPadding = PaddingValues(0.dp),
@@ -105,7 +107,7 @@ fun SignInScreen(
                         brush = Gradients.MainGradient,
                         shape = RoundedCornerShape(percent = 50)
                     )
-                    .fillMaxWidth()
+                    .width(300.dp)
                     .padding(8.dp),
                 contentAlignment = Alignment.Center
             ) {
@@ -116,7 +118,7 @@ fun SignInScreen(
                     Text(
                         text = "Войти",
                         style = Typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.background
+                        color = primaryWhite
                     )
                 }
             }

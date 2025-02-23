@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.titixoid.domain.models.Task
 import com.titixoid.domain.usecases.CreateTaskUseCase
+import com.titixoid.domain.usecases.UpdateUserTaskCountUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
@@ -18,7 +19,8 @@ data class CreateTaskUiState(
 
 class CreateTaskViewModel(
     private val workerId: String,
-    private val createTaskUseCase: CreateTaskUseCase
+    private val createTaskUseCase: CreateTaskUseCase,
+    private val updateTaskCountUseCase: UpdateUserTaskCountUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(CreateTaskUiState(workerId = workerId))
     val uiState = _uiState
@@ -48,6 +50,7 @@ class CreateTaskViewModel(
                     workerId = _uiState.value.workerId
                 )
                 val result = createTaskUseCase(task)
+                updateTaskCountUseCase(_uiState.value.workerId, 1)
                 _uiState.value = _uiState.value.copy(isLoading = false)
                 onResult(result)
             } catch (e: Exception) {

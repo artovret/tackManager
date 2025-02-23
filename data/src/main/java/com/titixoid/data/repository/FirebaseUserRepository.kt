@@ -1,11 +1,15 @@
 package com.titixoid.data.repository
 
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.titixoid.data.models.UserDao
 import com.titixoid.data.models.toDomainUser
 import com.titixoid.domain.models.User
 import com.titixoid.domain.repository.UserRepository
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 
 class FirebaseUserRepository(
@@ -43,6 +47,37 @@ class FirebaseUserRepository(
             null
         }
     }
+
+    override fun getWorkersWithTaskCountFlow(): Flow<List<User>> = callbackFlow {
+        val listener = firestore.collection("users")
+            .whereEqualTo("role", "worker")
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    close(error)
+                    return@addSnapshotListener
+                }
+
+                val users = snapshot?.documents?.mapNotNull { doc ->
+                    doc.toObject(UserDao::class.java)?.toDomainUser(doc.id)
+                } ?: emptyList()
+
+                trySend(users).isSuccess
+            }
+
+        awaitClose { listener.remove() }
+    }
+
+    override suspend fun updateUserTaskCount(workerId: String, delta: Int) {
+        try {
+            firestore.collection("users")
+                .document(workerId)
+                .update("taskCount", FieldValue.increment(delta.toLong()))
+                .await()
+        } catch (e: Exception) {
+            throw Exception("Failed to update task count", e)
+        }
+    }
+
 
 
     override suspend fun checkAndRefreshAuth(): Boolean {

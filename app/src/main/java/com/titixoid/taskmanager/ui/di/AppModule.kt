@@ -14,7 +14,7 @@ val appModule = module {
     viewModel { SignInViewModel(get()) }
     viewModel { StartScreenViewModel(get()) }
     viewModel { WorkerTaskListViewModel() }
-    viewModel { AdminWorkerListViewModel(get(), get()) }
+    viewModel { AdminWorkerListViewModel(get()) }
     viewModel { (workerId: String) ->
         AdminTaskListViewModel(
             workerId = workerId,
@@ -24,6 +24,7 @@ val appModule = module {
     viewModel { (workerId: String) ->
         CreateTaskViewModel(
             workerId = workerId,
+            get(),
             get()
         )
     }

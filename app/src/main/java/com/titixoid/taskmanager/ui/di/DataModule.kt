@@ -14,6 +14,7 @@ import com.titixoid.domain.usecases.CreateTaskUseCase
 import com.titixoid.domain.usecases.GetAllUsersUseCase
 import com.titixoid.domain.usecases.GetTasksForWorkerUseCase
 import com.titixoid.domain.usecases.SignInUseCase
+import com.titixoid.domain.usecases.UpdateUserTaskCountUseCase
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
@@ -33,5 +34,6 @@ val dataStoreModule = module {
     factory { GetAllUsersUseCase(get()) }
     factory { GetTasksForWorkerUseCase(get()) }
     factory { CreateTaskUseCase(get()) }
+    factory { UpdateUserTaskCountUseCase(get()) }
 
 }
