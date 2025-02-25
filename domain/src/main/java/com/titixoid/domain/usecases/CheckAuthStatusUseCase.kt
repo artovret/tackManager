@@ -8,8 +8,6 @@ class CheckAuthStatusUseCase(
     private val userRepository: UserRepository
 ) {
     suspend operator fun invoke(): AuthStatus {
-        val isAuth = userRepository.checkAndRefreshAuth()
-        val role = if (isAuth) userRepository.getUserRole() else null
-        return AuthStatus(isAuthenticated = isAuth, role = role)
+        return userRepository.getAuthStatus()
     }
 }

@@ -11,10 +11,9 @@ import java.util.Locale
 sealed class StartNavigationDestination {
     data object Loading : StartNavigationDestination()
     data object Auth : StartNavigationDestination()
-    data object Worker : StartNavigationDestination()
     data object Admin : StartNavigationDestination()
+    data class Worker(val workerId: String) : StartNavigationDestination()
 }
-
 class StartScreenViewModel(
     private val checkAuthStatusUseCase: CheckAuthStatusUseCase
 ) : ViewModel() {
@@ -31,7 +30,7 @@ class StartScreenViewModel(
             } else {
                 when (authStatus.role?.lowercase(Locale.getDefault())) {
                     "admin" -> StartNavigationDestination.Admin
-                    else -> StartNavigationDestination.Worker
+                    else -> StartNavigationDestination.Worker(authStatus.userId ?: "")
                 }
             }
             _navigationState.value = destination

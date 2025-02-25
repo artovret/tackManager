@@ -26,13 +26,15 @@ fun TasksNavHost(
             navController.popBackStack()
             when (destination) {
                 StartNavigationDestination.Admin -> navController.navigate(AdminGraph)
-                StartNavigationDestination.Worker -> navController.navigate(WorkerDestination)
                 StartNavigationDestination.Auth -> navController.navigate(SignInDestination)
-                StartNavigationDestination.Loading -> {}
+                is StartNavigationDestination.Worker ->
+                    navController.navigate(WorkerDestination(destination.workerId))
+
+                StartNavigationDestination.Loading -> TODO()
             }
         }
         login(navController)
         admin(navController = navController)
-        workerRole(onStartClicked = {})
+        workerRole()
     }
 }

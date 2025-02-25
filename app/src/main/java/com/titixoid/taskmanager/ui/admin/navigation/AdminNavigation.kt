@@ -21,13 +21,13 @@ import org.koin.core.parameter.parametersOf
 object AdminGraph
 
 @Serializable
-private object WorkersDestination
+object WorkersDestination
 
 @Serializable
 data class TaskListDestination(val workerId: String)
 
 @Serializable
-private class TaskCreateDestination(val workerId: String)
+class TaskCreateDestination(val workerId: String)
 
 fun NavGraphBuilder.admin(
     navController: NavHostController

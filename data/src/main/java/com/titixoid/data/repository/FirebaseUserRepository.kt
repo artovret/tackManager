@@ -5,6 +5,7 @@ import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.titixoid.data.models.UserDao
 import com.titixoid.data.models.toDomainUser
+import com.titixoid.domain.models.AuthStatus
 import com.titixoid.domain.models.User
 import com.titixoid.domain.repository.UserRepository
 import kotlinx.coroutines.channels.awaitClose
@@ -114,6 +115,33 @@ class FirebaseUserRepository(
 
         return snapshot.documents.mapNotNull { doc ->
             doc.toObject(UserDao::class.java)?.toDomainUser(doc.id)
+        }
+    }
+
+    override suspend fun getAuthStatus(): AuthStatus {
+        return try {
+            val currentUser = firebaseAuth.currentUser
+            if (currentUser != null) {
+                val role = getCachedUserRole(currentUser.uid)
+                AuthStatus(
+                    isAuthenticated = true,
+                    role = role,
+                    userId = currentUser.uid
+                )
+            } else {
+                AuthStatus(false, null, null)
+            }
+        } catch (e: Exception) {
+            AuthStatus(false, null, null)
+        }
+    }
+
+    private suspend fun getCachedUserRole(userId: String): String? {
+        return try {
+            val document = firestore.collection("users").document(userId).get().await()
+            document.getString("role")
+        } catch (e: Exception) {
+            null
         }
     }
 }

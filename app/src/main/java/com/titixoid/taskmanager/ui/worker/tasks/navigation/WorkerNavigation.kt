@@ -1,30 +1,35 @@
 package com.titixoid.taskmanager.ui.worker.tasks.navigation
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import androidx.navigation.toRoute
+import com.titixoid.domain.models.Task
+import com.titixoid.taskmanager.ui.widgets.TaskFilter
 import com.titixoid.taskmanager.ui.worker.tasks.WorkerTaskListScreen
 import com.titixoid.taskmanager.ui.worker.tasks.WorkerTaskListViewModel
 import kotlinx.serialization.Serializable
 import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Serializable
-object WorkerDestination
+data class WorkerDestination(val workerId: String)
 
-fun NavGraphBuilder.workerRole(onStartClicked: () -> Unit) {
-    composable<WorkerDestination> {
-        Log.d("NavDebug", "WorkerDestination route: ${WorkerDestination::class.simpleName}")
-        val viewModel: WorkerTaskListViewModel = koinViewModel()
+fun NavGraphBuilder.workerRole() {
+    composable<WorkerDestination> { backStackEntry ->
+        val args = backStackEntry.toRoute<WorkerDestination>()
+        val viewModel: WorkerTaskListViewModel =
+            koinViewModel(parameters = { parametersOf(args.workerId) })
         val uiState by viewModel.uiState.collectAsStateWithLifecycle()
         WorkerTaskListScreen(
             uiState = uiState,
-            onFilterSelected = { filter ->
+            onFilterSelected = { filter: TaskFilter ->  // Явно указываем тип фильтра
                 viewModel.setFilter(filter)
             },
-            onTaskClick = { task ->
-                // Обработка клика по задаче (например, навигация)
+            onTaskClick = { task: Task ->  // Явно указываем тип задачи
+                // Реализуйте навигацию к деталям задачи
+                // navController.navigate(TaskDetailsDestination(task.id))
             }
         )
     }

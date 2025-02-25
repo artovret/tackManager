@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -24,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.titixoid.domain.models.Task
 import com.titixoid.taskmanager.ui.theme.Typography
 import com.titixoid.taskmanager.ui.theme.primaryText
 import com.titixoid.taskmanager.ui.theme.secondText
@@ -32,6 +32,7 @@ import com.titixoid.taskmanager.ui.theme.space32
 import com.titixoid.taskmanager.ui.widgets.BackgroundColumn
 import com.titixoid.taskmanager.ui.widgets.BottomBarInsetsSpacer
 import com.titixoid.taskmanager.ui.widgets.StatusBarInsetsSpacer
+import com.titixoid.taskmanager.ui.widgets.TaskFilter
 
 @Composable
 fun WorkerTaskListScreen(
