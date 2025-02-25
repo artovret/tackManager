@@ -7,8 +7,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.titixoid.domain.models.Task
 import com.titixoid.domain.usecases.GetTasksForWorkerUseCase
+import com.titixoid.taskmanager.ui.admin.tasks.AdminTaskFilter
 import com.titixoid.taskmanager.ui.theme.Typography
-import com.titixoid.taskmanager.ui.widgets.TaskFilter
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
@@ -16,50 +16,24 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-//sealed class TaskFilter(open val displayName: String) {
-//    data object None : TaskFilter("Все")
-//    data object Urgent : TaskFilter("Срочные")
-//    data object Planned : TaskFilter("Плановые")
-//    data object Optional : TaskFilter("Прочее")
-//}
-
-//@Immutable
-//data class Task(
-//    val id: Int,
-//    val title: String,
-//    val description: String,
-//    val filter: TaskFilter
-//)
 
 @Immutable
 data class FilterButtonState(
-    val filter: TaskFilter,
+    val filter: AdminTaskFilter,
     val backgroundColor: Color,
     val textColor: Color,
     val textStyle: TextStyle
 )
 
-//@Immutable
-//data class WorkerTaskListUiState(
-//    val tasks: List<Task> = emptyList(),
-//    val selectedFilter: TaskFilter = TaskFilter.None,
-//    val availableFilters: List<TaskFilter> = listOf(
-//        TaskFilter.Urgent,
-//        TaskFilter.Planned,
-//        TaskFilter.Optional
-//    ),
-//    val filteredTasks: List<Task> = emptyList(),
-//    val filterButtonStates: List<FilterButtonState> = emptyList()
-//)
 
 @Immutable
 data class WorkerTaskListUiState(
     val tasks: List<Task> = emptyList(),
-    val selectedFilter: TaskFilter = TaskFilter.NONE,
-    val availableFilters: List<TaskFilter> = listOf(
-        TaskFilter.IN_PROGRESS,
-        TaskFilter.COMPLETED,
-        TaskFilter.PENDING
+    val selectedFilter: AdminTaskFilter = AdminTaskFilter.None,
+    val availableFilters: List<AdminTaskFilter> = listOf(
+        AdminTaskFilter.Urgent,
+        AdminTaskFilter.Planned,
+        AdminTaskFilter.Optional
     ),
     val filteredTasks: List<Task> = emptyList(),
     val filterButtonStates: List<FilterButtonState> = emptyList()
@@ -88,7 +62,7 @@ class WorkerTaskListViewModel(
                     _uiState.update { current ->
                         current.copy(
                             tasks = tasks,
-                            filteredTasks = if (current.selectedFilter == TaskFilter.NONE) tasks
+                            filteredTasks = if (current.selectedFilter == AdminTaskFilter.None) tasks
                             else tasks.filter {
                                 it.status.equals(
                                     current.selectedFilter.id,
@@ -103,13 +77,14 @@ class WorkerTaskListViewModel(
                     }
                 }
                 .catch { e -> e.printStackTrace() }
+                .collect {}
         }
     }
 
-    fun setFilter(filter: TaskFilter) {
+    fun setFilter(filter: AdminTaskFilter) {
         _uiState.update { current ->
-            val newFilter = if (current.selectedFilter == filter) TaskFilter.NONE else filter
-            val newFilteredTasks = if (newFilter == TaskFilter.NONE) {
+            val newFilter = if (current.selectedFilter == filter) AdminTaskFilter.None else filter
+            val newFilteredTasks = if (newFilter == AdminTaskFilter.None) {
                 current.tasks
             } else {
                 current.tasks.filter { it.status.equals(newFilter.id, ignoreCase = true) }
@@ -124,8 +99,8 @@ class WorkerTaskListViewModel(
     }
 
     private fun computeFilterButtonStates(
-        selected: TaskFilter,
-        available: List<TaskFilter>
+        selected: AdminTaskFilter,
+        available: List<AdminTaskFilter>
     ): List<FilterButtonState> {
         return available.map { filter ->
             if (filter == selected) {

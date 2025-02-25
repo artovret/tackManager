@@ -27,13 +27,15 @@ fun TasksNavHost(
             when (destination) {
                 StartNavigationDestination.Admin -> navController.navigate(AdminGraph)
                 StartNavigationDestination.Auth -> navController.navigate(SignInDestination)
-                is StartNavigationDestination.Worker ->
-                    navController.navigate(WorkerDestination(destination.workerId))
-
+                is StartNavigationDestination.Worker -> navController.navigate(
+                    WorkerDestination(
+                        workerId = destination.workerId
+                    )
+                )
                 StartNavigationDestination.Loading -> TODO()
             }
         }
-        login(navController)
+        login(navController = navController)
         admin(navController = navController)
         workerRole()
     }
