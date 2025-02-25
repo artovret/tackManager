@@ -6,7 +6,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.titixoid.domain.models.Task
-import com.titixoid.taskmanager.ui.admin.tasks.AdminTaskFilter
+import com.titixoid.taskmanager.ui.common.TaskFilterEnum
 import com.titixoid.taskmanager.ui.worker.tasks.WorkerTaskListScreen
 import com.titixoid.taskmanager.ui.worker.tasks.WorkerTaskListViewModel
 import kotlinx.serialization.Serializable
@@ -24,7 +24,7 @@ fun NavGraphBuilder.workerRole() {
         val uiState by viewModel.uiState.collectAsStateWithLifecycle()
         WorkerTaskListScreen(
             uiState = uiState,
-            onFilterSelected = { filter: AdminTaskFilter ->  // Явно указываем тип фильтра
+            onFilterSelected = { filter: TaskFilterEnum ->  // Явно указываем тип фильтра
                 viewModel.setFilter(filter)
             },
             onTaskClick = { task: Task ->  // Явно указываем тип задачи

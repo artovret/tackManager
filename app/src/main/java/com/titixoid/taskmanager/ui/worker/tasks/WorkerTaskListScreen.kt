@@ -24,9 +24,10 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.titixoid.domain.models.Task
-import com.titixoid.taskmanager.ui.admin.tasks.AdminTaskFilter
+import com.titixoid.taskmanager.ui.common.TaskFilterEnum
 import com.titixoid.taskmanager.ui.theme.Typography
 import com.titixoid.taskmanager.ui.theme.primaryText
+import com.titixoid.taskmanager.ui.theme.primaryWhite
 import com.titixoid.taskmanager.ui.theme.secondText
 import com.titixoid.taskmanager.ui.theme.space16
 import com.titixoid.taskmanager.ui.theme.space32
@@ -38,7 +39,7 @@ import com.titixoid.taskmanager.ui.widgets.StatusBarInsetsSpacer
 @Composable
 fun WorkerTaskListScreen(
     uiState: WorkerTaskListUiState,
-    onFilterSelected: (AdminTaskFilter) -> Unit,
+    onFilterSelected: (TaskFilterEnum) -> Unit,
     onTaskClick: (Task) -> Unit
 ) {
     BackgroundColumn {
@@ -119,7 +120,7 @@ fun WorkerTaskListScreen(
                                 shape = RoundedCornerShape(8.dp)
                             )
                             .background(
-                                color = Color.White,
+                                color = primaryWhite,
                                 shape = RoundedCornerShape(8.dp)
                             )
                             .clickable { onTaskClick(task) }

@@ -28,6 +28,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.titixoid.taskmanager.R
+import com.titixoid.taskmanager.ui.common.TaskFilterEnum
 import com.titixoid.taskmanager.ui.theme.Typography
 import com.titixoid.taskmanager.ui.theme.background
 import com.titixoid.taskmanager.ui.theme.primaryText
@@ -43,7 +44,7 @@ import com.titixoid.taskmanager.ui.widgets.StatusBarInsetsSpacer
 @Composable
 fun AdminTaskListScreen(
     uiState: AdminTaskListUiState,
-    onFilterSelected: (AdminTaskFilter) -> Unit,
+    onFilterSelected: (TaskFilterEnum) -> Unit,
     onAddClicked: () -> Unit,
 ) {
     Box(modifier = Modifier.fillMaxSize()) {

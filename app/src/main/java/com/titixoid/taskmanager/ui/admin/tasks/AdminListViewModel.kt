@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.titixoid.domain.models.Task
 import com.titixoid.domain.usecases.GetTasksForWorkerUseCase
+import com.titixoid.taskmanager.ui.common.TaskFilterEnum
 import com.titixoid.taskmanager.ui.theme.Typography
 import com.titixoid.taskmanager.ui.theme.primaryText
 import com.titixoid.taskmanager.ui.theme.primaryWhite
@@ -19,16 +20,10 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 
 
-enum class AdminTaskFilter(val id: String, val displayName: String) {
-    None("", "Все"),
-    Urgent("urgent", "Срочные"),
-    Planned("planned", "Плановые"),
-    Optional("optional", "Прочее")
-}
 
 @Immutable
 data class AdminFilterButtonState(
-    val filter: AdminTaskFilter,
+    val filter: TaskFilterEnum,
     val backgroundColor: Color,
     val textColor: Color,
     val textStyle: TextStyle
@@ -37,15 +32,15 @@ data class AdminFilterButtonState(
 @Immutable
 data class AdminTaskListUiState(
     val tasks: List<Task> = emptyList(),
-    val selectedFilter: AdminTaskFilter = AdminTaskFilter.None,
+    val selectedFilter: TaskFilterEnum = TaskFilterEnum.NONE,
     val filteredTasks: List<Task> = emptyList(),
     val filterButtonStates: List<AdminFilterButtonState> = emptyList()
 ) {
     companion object {
         val DEFAULT_FILTERS = listOf(
-            AdminTaskFilter.Urgent,
-            AdminTaskFilter.Planned,
-            AdminTaskFilter.Optional
+            TaskFilterEnum.URGENT,
+            TaskFilterEnum.PLANNED,
+            TaskFilterEnum.OPTIONAL
         )
     }
 }
@@ -77,10 +72,10 @@ class AdminTaskListViewModel(
             .launchIn(viewModelScope)
     }
 
-    fun setFilter(filter: AdminTaskFilter) {
+    fun setFilter(filter: TaskFilterEnum) {
         updateState { currentState ->
             val newFilter =
-                if (filter == currentState.selectedFilter) AdminTaskFilter.None else filter
+                if (filter == currentState.selectedFilter) TaskFilterEnum.NONE else filter
             currentState.copy(
                 selectedFilter = newFilter,
                 filteredTasks = filterTasks(currentState.tasks, newFilter),
@@ -89,14 +84,14 @@ class AdminTaskListViewModel(
         }
     }
 
-    private fun filterTasks(tasks: List<Task>, filter: AdminTaskFilter): List<Task> {
+    private fun filterTasks(tasks: List<Task>, filter: TaskFilterEnum): List<Task> {
         return when (filter) {
-            AdminTaskFilter.None -> tasks
+            TaskFilterEnum.NONE -> tasks
             else -> tasks.filter { it.status.equals(filter.id, ignoreCase = true) }
         }
     }
 
-    private fun createFilterButtonStates(selectedFilter: AdminTaskFilter): List<AdminFilterButtonState> {
+    private fun createFilterButtonStates(selectedFilter: TaskFilterEnum): List<AdminFilterButtonState> {
         return AdminTaskListUiState.DEFAULT_FILTERS.map { filter ->
             AdminFilterButtonState(
                 filter = filter,
