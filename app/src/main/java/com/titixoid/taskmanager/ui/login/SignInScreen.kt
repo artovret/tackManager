@@ -112,7 +112,6 @@ fun SignInScreen(
                 contentAlignment = Alignment.Center
             ) {
                 if (signInUiState.isLoading) {
-                    // Индикатор загрузки (например, CircularProgressIndicator)
                     CircularProgressIndicator(color = MaterialTheme.colorScheme.background)
                 } else {
                     Text(
