@@ -11,6 +11,8 @@ import com.titixoid.domain.repository.TaskRepository
 import com.titixoid.domain.repository.UserRepository
 import com.titixoid.domain.usecases.CheckAuthStatusUseCase
 import com.titixoid.domain.usecases.CreateTaskUseCase
+import com.titixoid.domain.usecases.DeleteTaskAndUpdateTaskCountUseCase
+import com.titixoid.domain.usecases.DeleteTaskUseCase
 import com.titixoid.domain.usecases.GetAllUsersUseCase
 import com.titixoid.domain.usecases.GetTasksForWorkerUseCase
 import com.titixoid.domain.usecases.SignInUseCase
@@ -35,5 +37,7 @@ val dataStoreModule = module {
     factory { GetTasksForWorkerUseCase(get()) }
     factory { CreateTaskUseCase(get()) }
     factory { UpdateUserTaskCountUseCase(get()) }
+    factory { DeleteTaskUseCase(get()) }
+    factory { DeleteTaskAndUpdateTaskCountUseCase(get(), get()) }
 
 }

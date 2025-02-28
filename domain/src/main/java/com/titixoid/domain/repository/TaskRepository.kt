@@ -7,4 +7,5 @@ interface TaskRepository {
     fun getTasksForWorkerFlow(workerId: String): Flow<List<Task>>
     suspend fun getAllTasks(): List<Task>
     suspend fun createTask(task: Task): Boolean
+    suspend fun deleteTask(task: Task): Boolean
 }

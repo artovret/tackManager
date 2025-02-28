@@ -27,12 +27,14 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.titixoid.domain.models.Task
 import com.titixoid.taskmanager.R
 import com.titixoid.taskmanager.ui.common.TaskFilterEnum
 import com.titixoid.taskmanager.ui.theme.Typography
 import com.titixoid.taskmanager.ui.theme.background
 import com.titixoid.taskmanager.ui.theme.primaryText
 import com.titixoid.taskmanager.ui.theme.primaryTitleText
+import com.titixoid.taskmanager.ui.theme.primaryWhite
 import com.titixoid.taskmanager.ui.theme.secondText
 import com.titixoid.taskmanager.ui.theme.space16
 import com.titixoid.taskmanager.ui.theme.space32
@@ -46,6 +48,7 @@ fun AdminTaskListScreen(
     uiState: AdminTaskListUiState,
     onFilterSelected: (TaskFilterEnum) -> Unit,
     onAddClicked: () -> Unit,
+    onDeleteClicked: (Task) -> Unit,
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
     BackgroundColumn {
@@ -126,25 +129,34 @@ fun AdminTaskListScreen(
                                 shape = RoundedCornerShape(8.dp)
                             )
                             .background(
-                                color = Color.White,
+                                color = primaryWhite,
                                 shape = RoundedCornerShape(8.dp)
                             )
                             .clickable {}
-                            .padding(16.dp)
+                            .padding(8.dp)
                     ) {
-                        Column {
+                        Column(modifier = Modifier.padding(8.dp)) {
                             Text(
                                 text = task.title,
                                 style = Typography.bodyLarge,
                                 color = primaryText
                             )
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(4.dp))
                             Text(
                                 text = task.description,
                                 style = Typography.bodySmall,
                                 color = secondText
                             )
                         }
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_close),
+                            contentDescription = "Удаление задачи",
+                            tint = secondText,
+                            modifier = Modifier
+                                .height(20.dp)
+                                .align(Alignment.TopEnd)
+                                .clickable { onDeleteClicked(task) }
+                            )
                     }
                 }
             }

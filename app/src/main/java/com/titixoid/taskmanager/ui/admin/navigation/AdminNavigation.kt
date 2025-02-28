@@ -53,7 +53,8 @@ fun NavGraphBuilder.admin(
             AdminTaskListScreen(
                 uiState = uiState,
                 onFilterSelected = viewModel::setFilter,
-                onAddClicked = { navController.navigate(TaskCreateDestination(args.workerId)) }
+                onAddClicked = { navController.navigate(TaskCreateDestination(args.workerId)) },
+                onDeleteClicked = viewModel::deleteTask,
             )
         }
 

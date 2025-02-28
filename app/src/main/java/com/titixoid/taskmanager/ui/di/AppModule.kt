@@ -23,12 +23,12 @@ val appModule = module {
     viewModel { (workerId: String) ->
         AdminTaskListViewModel(
             workerId = workerId,
+            get(),
             get()
         )
     }
     viewModel { (workerId: String) ->
         CreateTaskViewModel(
-            workerId = workerId,
             get(),
             get()
         )

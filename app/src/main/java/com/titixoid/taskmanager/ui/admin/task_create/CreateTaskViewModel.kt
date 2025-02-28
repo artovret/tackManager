@@ -15,14 +15,16 @@ data class CreateTaskUiState(
     val workerId: String = "",
     val isLoading: Boolean = false,
     val errorMessage: String? = null
-)
+) {
+    val isFormValid: Boolean
+        get() = title.isNotEmpty() && description.isNotEmpty() && status.isNotEmpty()
+}
 
 class CreateTaskViewModel(
-    private val workerId: String,
     private val createTaskUseCase: CreateTaskUseCase,
     private val updateTaskCountUseCase: UpdateUserTaskCountUseCase
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow(CreateTaskUiState(workerId = workerId))
+    private val _uiState = MutableStateFlow(CreateTaskUiState())
     val uiState = _uiState
 
     fun onTitleChange(title: String) {

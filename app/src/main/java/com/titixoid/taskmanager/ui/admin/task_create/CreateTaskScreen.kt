@@ -1,5 +1,6 @@
 package com.titixoid.taskmanager.ui.admin.task_create
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -26,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.titixoid.taskmanager.ui.theme.Gradients
@@ -49,6 +51,8 @@ fun CreateTaskScreen(
     onStatusChange: (String) -> Unit,
     onCreateTask: () -> Unit
 ) {
+    val currentContext = LocalContext.current
+
     Box(modifier = Modifier.fillMaxSize()) {
 
         Box(
@@ -141,9 +145,16 @@ fun CreateTaskScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-
             Button(
-                onClick = onCreateTask,
+                onClick = {
+                    if (uiState.isFormValid && !uiState.isLoading) {
+                        onCreateTask()
+                    } else {
+                        Toast.makeText(currentContext, "Заполните все поля", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(70.dp),
@@ -164,10 +175,10 @@ fun CreateTaskScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                            text = "Создать задачу",
-                            style = Typography.bodyLarge,
+                        text = "Создать задачу",
+                        style = Typography.bodyLarge,
                         color = primaryWhite
-                        )
+                    )
                 }
             }
         }

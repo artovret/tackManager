@@ -60,4 +60,17 @@ class FirebaseTaskRepository(
             false
         }
     }
+
+    override suspend fun deleteTask(task: Task): Boolean {
+        return try {
+            val documentRef = FirebaseFirestore.getInstance()
+                .collection("tasks")
+                .document(task.id)
+
+            documentRef.delete().await()
+            true
+        } catch (e: Exception) {
+            false
+        }
+    }
 }

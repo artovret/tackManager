@@ -6,6 +6,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.titixoid.domain.models.Task
+import com.titixoid.domain.usecases.DeleteTaskAndUpdateTaskCountUseCase
 import com.titixoid.domain.usecases.GetTasksForWorkerUseCase
 import com.titixoid.taskmanager.ui.common.TaskFilterEnum
 import com.titixoid.taskmanager.ui.theme.Typography
@@ -18,7 +19,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
-
+import kotlinx.coroutines.launch
 
 
 @Immutable
@@ -47,7 +48,8 @@ data class AdminTaskListUiState(
 
 class AdminTaskListViewModel(
     private val workerId: String,
-    private val getTasksForWorkerUseCase: GetTasksForWorkerUseCase
+    private val getTasksForWorkerUseCase: GetTasksForWorkerUseCase,
+    private val deleteTaskAndUpdateTaskCountUseCase: DeleteTaskAndUpdateTaskCountUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(AdminTaskListUiState())
@@ -88,6 +90,12 @@ class AdminTaskListViewModel(
         return when (filter) {
             TaskFilterEnum.NONE -> tasks
             else -> tasks.filter { it.status.equals(filter.id, ignoreCase = true) }
+        }
+    }
+
+    fun deleteTask(task: Task) {
+        viewModelScope.launch {
+            val result = deleteTaskAndUpdateTaskCountUseCase(task)
         }
     }
 
