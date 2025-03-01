@@ -16,8 +16,10 @@ data class UserDao(
 fun UserDao.toDomainUser(id: String): User {
     return User(
         id = id,
+        login = this.login,
         firstName = this.firstName,
         lastName = this.lastName,
+        password = this.password,
         role = this.role,
         taskCount = this.taskCount,
     )

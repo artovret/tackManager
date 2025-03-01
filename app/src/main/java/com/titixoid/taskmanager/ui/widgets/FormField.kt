@@ -11,11 +11,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.titixoid.taskmanager.ui.theme.TaskManagerTheme
 import com.titixoid.taskmanager.ui.theme.Typography
+import com.titixoid.taskmanager.ui.theme.borderWidth1
+import com.titixoid.taskmanager.ui.theme.cornerRadius8
 import com.titixoid.taskmanager.ui.theme.cursorColor
 import com.titixoid.taskmanager.ui.theme.descriptionText
+import com.titixoid.taskmanager.ui.theme.formFieldHeight56
 import com.titixoid.taskmanager.ui.theme.primaryWhite
 
 @Composable
@@ -28,16 +30,16 @@ fun FormField(
 ) {
     TextField(
         value = value,
-        shape = RoundedCornerShape(8.dp),
+        shape = RoundedCornerShape(cornerRadius8),
         textStyle = Typography.bodySmall,
         modifier =
         modifier
-            .height(56.dp)
+            .height(formFieldHeight56)
             .border(
-                width = 1.dp,
+                width = borderWidth1,
                 color = if (hasError) MaterialTheme.colorScheme.error
                 else descriptionText,
-                shape = RoundedCornerShape(8.dp)
+                shape = RoundedCornerShape(cornerRadius8)
             ),
         visualTransformation = visualTransformation,
         onValueChange = onValueChange,

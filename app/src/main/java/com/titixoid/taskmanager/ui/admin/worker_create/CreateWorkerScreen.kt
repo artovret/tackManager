@@ -1,12 +1,10 @@
-package com.titixoid.taskmanager.ui.admin.task_create
+package com.titixoid.taskmanager.ui.admin.worker_create
 
 import android.widget.Toast
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,8 +16,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -32,14 +28,11 @@ import com.titixoid.taskmanager.R
 import com.titixoid.taskmanager.ui.theme.Gradients
 import com.titixoid.taskmanager.ui.theme.TaskManagerTheme
 import com.titixoid.taskmanager.ui.theme.Typography
-import com.titixoid.taskmanager.ui.theme.borderGray
 import com.titixoid.taskmanager.ui.theme.cornerRadius100
 import com.titixoid.taskmanager.ui.theme.cornerRadius30
-import com.titixoid.taskmanager.ui.theme.cornerRadius50
 import com.titixoid.taskmanager.ui.theme.cornerRadiusPercent50
 import com.titixoid.taskmanager.ui.theme.descriptionText
 import com.titixoid.taskmanager.ui.theme.gradientTop
-import com.titixoid.taskmanager.ui.theme.inputFieldHeight200
 import com.titixoid.taskmanager.ui.theme.itemHeight70
 import com.titixoid.taskmanager.ui.theme.negativeOffsetX200
 import com.titixoid.taskmanager.ui.theme.negativeOffsetY180
@@ -51,31 +44,25 @@ import com.titixoid.taskmanager.ui.theme.padding30
 import com.titixoid.taskmanager.ui.theme.padding300
 import com.titixoid.taskmanager.ui.theme.padding56
 import com.titixoid.taskmanager.ui.theme.padding8
-import com.titixoid.taskmanager.ui.theme.primaryText
 import com.titixoid.taskmanager.ui.theme.primaryWhite
 import com.titixoid.taskmanager.ui.theme.secondTitleText
-import com.titixoid.taskmanager.ui.theme.secondaryGray
 import com.titixoid.taskmanager.ui.theme.size400
-import com.titixoid.taskmanager.ui.theme.space16
-import com.titixoid.taskmanager.ui.theme.space24
-import com.titixoid.taskmanager.ui.theme.space8
 import com.titixoid.taskmanager.ui.theme.taskNameText
-import com.titixoid.taskmanager.ui.theme.unselectedButton
 import com.titixoid.taskmanager.ui.theme.zeroValue
 import com.titixoid.taskmanager.ui.widgets.StyledInputField
 
+
 @Composable
-fun CreateTaskScreen(
-    uiState: CreateTaskUiState,
-    onTitleChange: (String) -> Unit,
-    onDescriptionChange: (String) -> Unit,
-    onStatusChange: (String) -> Unit,
-    onCreateTask: () -> Unit
+fun CreateWorkerScreen(
+    uiState: CreateWorkerUiState,
+    onLoginChange: (String) -> Unit,
+    onFirstNameChange: (String) -> Unit,
+    onLastNameChange: (String) -> Unit,
+    onPasswordChange: (String) -> Unit,
+    onCreateWorker: () -> Unit
 ) {
     val currentContext = LocalContext.current
-
     Box(modifier = Modifier.fillMaxSize()) {
-
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -92,7 +79,6 @@ fun CreateTaskScreen(
                         shape = RoundedCornerShape(cornerRadius100)
                     )
             )
-
             Box(
                 modifier = Modifier
                     .size(size400)
@@ -104,7 +90,6 @@ fun CreateTaskScreen(
                     )
             )
         }
-
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -115,11 +100,10 @@ fun CreateTaskScreen(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    stringResource(R.string.create_task_title),
+                    text = stringResource(R.string.create_worker_title),
                     style = Typography.titleSmall.copy(color = primaryWhite)
                 )
             }
-
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -127,10 +111,10 @@ fun CreateTaskScreen(
                     .padding(top = padding56)
             ) {
                 StyledInputField(
-                    label = stringResource(R.string.task_name),
-                    value = uiState.title,
-                    onValueChange = onTitleChange,
-                    placeholder = stringResource(R.string.enter_task_name),
+                    label = stringResource(R.string.worker_login_title),
+                    value = uiState.login,
+                    onValueChange = onLoginChange,
+                    placeholder = stringResource(R.string.enter_login),
                     labelColor = primaryWhite.copy(alpha = 0.6f),
                     textColor = taskNameText,
                     cursorColor = descriptionText,
@@ -139,7 +123,6 @@ fun CreateTaskScreen(
                 )
             }
         }
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -150,48 +133,59 @@ fun CreateTaskScreen(
                 )
                 .padding(padding30)
         ) {
-            Spacer(modifier = Modifier.height(space16))
 
-            Column(modifier = Modifier.fillMaxWidth()) {
-                Text(
-                    text = stringResource(R.string.task_description),
-                    style = Typography.labelSmall,
-                    color = secondTitleText.copy(alpha = 0.6f),
-                    modifier = Modifier.padding(bottom = padding8)
-                )
+            Spacer(modifier = Modifier.weight(0.7f))
 
-                OutlinedTextField(
-                    value = uiState.description,
-                    onValueChange = onDescriptionChange,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(inputFieldHeight200),
-                    textStyle = Typography.headlineLarge.copy(color = descriptionText),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        unfocusedBorderColor = secondaryGray,
-                        focusedBorderColor = borderGray
-                    )
-                )
-            }
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            StatusSelector(
-                selectedStatus = uiState.status,
-                onStatusSelected = onStatusChange
+            StyledInputField(
+                label = stringResource(R.string.worker_first_name),
+                value = uiState.firstName,
+                onValueChange = onFirstNameChange,
+                placeholder = stringResource(R.string.enter_first_name),
+                labelColor = secondTitleText.copy(alpha = 0.6f),
+                textColor = descriptionText,
+                cursorColor = descriptionText,
+                placeholderColor = secondTitleText.copy(alpha = 0.3f),
+                separatorColor = secondTitleText.copy(alpha = 0.5f)
             )
 
-            Spacer(modifier = Modifier.height(space24))
+            Spacer(modifier = Modifier.weight(0.7f))
+
+            StyledInputField(
+                label = stringResource(R.string.worker_last_name),
+                value = uiState.lastName,
+                onValueChange = onLastNameChange,
+                placeholder = stringResource(R.string.enter_last_name),
+                labelColor = secondTitleText.copy(alpha = 0.6f),
+                textColor = descriptionText,
+                cursorColor = descriptionText,
+                placeholderColor = secondTitleText.copy(alpha = 0.3f),
+                separatorColor = secondTitleText.copy(alpha = 0.5f)
+            )
+
+            Spacer(modifier = Modifier.weight(0.7f))
+
+            StyledInputField(
+                label = stringResource(R.string.worker_password),
+                value = uiState.password,
+                onValueChange = onPasswordChange,
+                placeholder = stringResource(R.string.enter_password),
+                labelColor = secondTitleText.copy(alpha = 0.6f),
+                textColor = descriptionText,
+                cursorColor = descriptionText,
+                placeholderColor = secondTitleText.copy(alpha = 0.3f),
+                separatorColor = secondTitleText.copy(alpha = 0.5f)
+            )
+
+            Spacer(modifier = Modifier.weight(1f))
 
             Button(
                 onClick = {
                     if (uiState.isFormValid && !uiState.isLoading) {
-                        onCreateTask()
+                        onCreateWorker()
                     } else {
                         Toast.makeText(currentContext, "Заполните все поля", Toast.LENGTH_SHORT)
                             .show()
                     }
-
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -200,7 +194,7 @@ fun CreateTaskScreen(
                 contentPadding = PaddingValues(zeroValue),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.Transparent
-                ),
+                )
             ) {
                 Box(
                     modifier = Modifier
@@ -213,7 +207,7 @@ fun CreateTaskScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = stringResource(R.string.create_task_button),
+                        text = stringResource(R.string.create_worker_button),
                         style = Typography.bodyLarge,
                         color = primaryWhite
                     )
@@ -223,68 +217,17 @@ fun CreateTaskScreen(
     }
 }
 
-@Composable
-private fun StatusSelector(
-    selectedStatus: String,
-    onStatusSelected: (String) -> Unit
-) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(space8)
-    ) {
-        StatusButton(
-            text = stringResource(R.string.status_urgent),
-            isSelected = selectedStatus == "urgent",
-            onClick = { onStatusSelected("urgent") }
-        )
-        StatusButton(
-            text = stringResource(R.string.status_planned),
-            isSelected = selectedStatus == "planned",
-            onClick = { onStatusSelected("planned") }
-        )
-        StatusButton(
-            text = stringResource(R.string.status_optional),
-            isSelected = selectedStatus == "optional",
-            onClick = { onStatusSelected("optional") }
-        )
-    }
-}
-
-@Composable
-private fun StatusButton(
-    text: String,
-    isSelected: Boolean,
-    onClick: () -> Unit
-) {
-    Button(
-        onClick = onClick,
-        colors = ButtonDefaults.buttonColors(
-            containerColor = if (isSelected) gradientTop else unselectedButton
-        ),
-        shape = RoundedCornerShape(cornerRadius50)
-    ) {
-        Text(
-            text = text,
-            color = if (isSelected) primaryWhite else primaryText,
-            style = Typography.bodySmall
-        )
-    }
-}
-
 @Preview(showBackground = true, device = "id:pixel_6_pro")
 @Composable
-fun CreateTaskPreview() {
+fun CreateWorkerPreview() {
     TaskManagerTheme {
-        CreateTaskScreen(
-            uiState = CreateTaskUiState(
-                title = "Новая задача",
-                description = "Описание тестовой задачи",
-                status = "planned"
-            ),
-            onTitleChange = {},
-            onDescriptionChange = {},
-            onStatusChange = {},
-            onCreateTask = {}
+        CreateWorkerScreen(
+            uiState = CreateWorkerUiState(firstName = "Иван", lastName = "Иванов"),
+            onFirstNameChange = {},
+            onLastNameChange = {},
+            onCreateWorker = {},
+            onLoginChange = {},
+            onPasswordChange = {}
         )
     }
 }

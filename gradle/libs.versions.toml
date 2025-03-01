@@ -1,6 +1,7 @@
 [versions]
 
 # app config
+spring-security = "6.2.4"
 compileSdk = "35"
 koinAndroid = "3.4.3"
 minSdk = "26"
@@ -60,6 +61,7 @@ firebaseFirestoreKtx = "25.1.2"
 [libraries]
 
 # core
+spring-security-crypto = { group = "org.springframework.security", name = "spring-security-crypto", version.ref = "spring-security" }
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koinAndroid" }
 koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koinAndroid" }

@@ -1,5 +1,4 @@
 package com.titixoid.taskmanager.ui.start.navigation
-
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
@@ -11,6 +10,8 @@ import com.titixoid.taskmanager.ui.admin.task_create.CreateTaskScreen
 import com.titixoid.taskmanager.ui.admin.task_create.CreateTaskViewModel
 import com.titixoid.taskmanager.ui.admin.tasks.AdminTaskListScreen
 import com.titixoid.taskmanager.ui.admin.tasks.AdminTaskListViewModel
+import com.titixoid.taskmanager.ui.admin.worker_create.CreateWorkerScreen
+import com.titixoid.taskmanager.ui.admin.worker_create.CreateWorkerViewModel
 import com.titixoid.taskmanager.ui.admin.workers.AdminWorkerListScreen
 import com.titixoid.taskmanager.ui.admin.workers.AdminWorkerListViewModel
 import kotlinx.serialization.Serializable
@@ -29,6 +30,9 @@ data class TaskListDestination(val workerId: String)
 @Serializable
 class TaskCreateDestination(val workerId: String)
 
+@Serializable
+object WorkerCreateDestination
+
 fun NavGraphBuilder.admin(
     navController: NavHostController
 ) {
@@ -40,6 +44,9 @@ fun NavGraphBuilder.admin(
                 uiState = uiState,
                 onWorkerClick = { workerId ->
                     navController.navigate(TaskListDestination(workerId))
+                },
+                onAddClicked = {
+                    navController.navigate(WorkerCreateDestination)
                 }
             )
         }
@@ -71,6 +78,25 @@ fun NavGraphBuilder.admin(
                 onStatusChange = viewModel::onStatusChange,
                 onCreateTask = {
                     viewModel.createTask { isSuccess ->
+                        if (isSuccess) {
+                            navController.popBackStack()
+                        }
+                    }
+                }
+            )
+        }
+
+        composable<WorkerCreateDestination> {
+            val viewModel: CreateWorkerViewModel = koinViewModel()
+            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+            CreateWorkerScreen(
+                uiState = uiState,
+                onLoginChange = viewModel::onLoginChange,
+                onFirstNameChange = viewModel::onFirstNameChange,
+                onLastNameChange = viewModel::onLastNameChange,
+                onPasswordChange = viewModel::onPasswordChange,
+                onCreateWorker = {
+                    viewModel.createWorker { isSuccess ->
                         if (isSuccess) {
                             navController.popBackStack()
                         }

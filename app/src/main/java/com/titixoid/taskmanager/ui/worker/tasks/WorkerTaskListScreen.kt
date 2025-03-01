@@ -21,16 +21,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import com.titixoid.domain.models.Task
+import com.titixoid.taskmanager.R
 import com.titixoid.taskmanager.ui.common.TaskFilterEnum
 import com.titixoid.taskmanager.ui.theme.Typography
+import com.titixoid.taskmanager.ui.theme.cornerRadius50
+import com.titixoid.taskmanager.ui.theme.cornerRadius8
+import com.titixoid.taskmanager.ui.theme.elevation4
+import com.titixoid.taskmanager.ui.theme.itemHeight50
+import com.titixoid.taskmanager.ui.theme.padding16
+import com.titixoid.taskmanager.ui.theme.padding8
 import com.titixoid.taskmanager.ui.theme.primaryText
 import com.titixoid.taskmanager.ui.theme.primaryWhite
 import com.titixoid.taskmanager.ui.theme.secondText
 import com.titixoid.taskmanager.ui.theme.space16
 import com.titixoid.taskmanager.ui.theme.space32
+import com.titixoid.taskmanager.ui.theme.space8
+import com.titixoid.taskmanager.ui.theme.verticalPadding8
+import com.titixoid.taskmanager.ui.theme.zeroValue
 import com.titixoid.taskmanager.ui.widgets.BackgroundColumn
 import com.titixoid.taskmanager.ui.widgets.BottomBarInsetsSpacer
 import com.titixoid.taskmanager.ui.widgets.StatusBarInsetsSpacer
@@ -47,14 +57,14 @@ fun WorkerTaskListScreen(
         Spacer(modifier = Modifier.height(space16))
 
         Text(
-            text = "Список задач",
+            text = stringResource(R.string.task_list),
             style = Typography.titleLarge,
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Start
         )
         Spacer(modifier = Modifier.height(space16))
         Text(
-            text = "Приятного дня",
+            text = stringResource(R.string.have_nice_day),
             style = Typography.bodySmall,
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Start
@@ -67,23 +77,23 @@ fun WorkerTaskListScreen(
                     onClick = { onFilterSelected(buttonState.filter) },
                     modifier = Modifier
                         .weight(1f)
-                        .height(50.dp),
-                    shape = RoundedCornerShape(50.dp),
-                    contentPadding = PaddingValues(0.dp),
+                        .height(itemHeight50),
+                    shape = RoundedCornerShape(cornerRadius50),
+                    contentPadding = PaddingValues(zeroValue),
                     colors = ButtonDefaults.buttonColors(Color.Transparent)
                 ) {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
                             .shadow(
-                                elevation = 4.dp,
-                                shape = RoundedCornerShape(50.dp)
+                                elevation = elevation4,
+                                shape = RoundedCornerShape(cornerRadius50)
                             )
                             .background(
                                 SolidColor(buttonState.backgroundColor),
-                                shape = RoundedCornerShape(50.dp)
+                                shape = RoundedCornerShape(cornerRadius50)
                             )
-                            .padding(8.dp),
+                            .padding(padding8),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
@@ -104,7 +114,7 @@ fun WorkerTaskListScreen(
         Column(modifier = Modifier.fillMaxWidth()) {
             if (uiState.filteredTasks.isEmpty()) {
                 Text(
-                    text = "Нет задач",
+                    text = stringResource(R.string.no_tasks),
                     style = Typography.bodySmall,
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center
@@ -114,17 +124,17 @@ fun WorkerTaskListScreen(
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(vertical = 8.dp)
+                            .padding(vertical = verticalPadding8)
                             .shadow(
-                                elevation = 4.dp,
-                                shape = RoundedCornerShape(8.dp)
+                                elevation = elevation4,
+                                shape = RoundedCornerShape(cornerRadius8)
                             )
                             .background(
                                 color = primaryWhite,
-                                shape = RoundedCornerShape(8.dp)
+                                shape = RoundedCornerShape(cornerRadius8)
                             )
                             .clickable { onTaskClick(task) }
-                            .padding(16.dp)
+                            .padding(padding16)
                     ) {
                         Column {
                             Text(
@@ -132,7 +142,7 @@ fun WorkerTaskListScreen(
                                 style = Typography.bodyLarge,
                                 color = primaryText
                             )
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(space8))
                             Text(
                                 text = task.description,
                                 style = Typography.bodySmall,
@@ -143,7 +153,7 @@ fun WorkerTaskListScreen(
                 }
             }
         }
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(space32))
         BottomBarInsetsSpacer()
     }
 }

@@ -12,4 +12,5 @@ interface UserRepository {
     suspend fun getAllUsers(): List<User>
     fun getWorkersWithTaskCountFlow(): Flow<List<User>>
     suspend fun updateUserTaskCount(workerId: String, delta: Int)
+    suspend fun createUser(user: User): Boolean
 }

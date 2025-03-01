@@ -20,21 +20,25 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
 import com.titixoid.taskmanager.R
 import com.titixoid.taskmanager.ui.theme.Gradients
 import com.titixoid.taskmanager.ui.theme.Typography
+import com.titixoid.taskmanager.ui.theme.cornerRadiusPercent50
+import com.titixoid.taskmanager.ui.theme.itemHeight90
+import com.titixoid.taskmanager.ui.theme.itemWidth200
+import com.titixoid.taskmanager.ui.theme.padding34
+import com.titixoid.taskmanager.ui.theme.padding8
+import com.titixoid.taskmanager.ui.theme.zeroValue
 
 @Composable
 fun StartScreen(
     onManualStartClicked: (() -> Unit)? = null
 ) {
-
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(34.dp),
-        contentAlignment = Alignment.Center
+            .padding(padding34)
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
             Box(
@@ -45,7 +49,7 @@ fun StartScreen(
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.ic_logo),
-                    contentDescription = "Логотип"
+                    contentDescription = stringResource(R.string.app_logo)
                 )
             }
             if (onManualStartClicked != null) {
@@ -58,10 +62,10 @@ fun StartScreen(
                     Button(
                         onClick = { onManualStartClicked() },
                         modifier = Modifier
-                            .width(200.dp)
-                            .height(90.dp),
-                        shape = RoundedCornerShape(percent = 50),
-                        contentPadding = PaddingValues(0.dp),
+                            .width(itemWidth200)
+                            .height(itemHeight90),
+                        shape = RoundedCornerShape(percent = cornerRadiusPercent50),
+                        contentPadding = PaddingValues(zeroValue),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color.Transparent
                         )
@@ -70,14 +74,14 @@ fun StartScreen(
                             modifier = Modifier
                                 .background(
                                     brush = Gradients.MainGradient,
-                                    shape = RoundedCornerShape(percent = 50)
+                                    shape = RoundedCornerShape(percent = cornerRadiusPercent50)
                                 )
-                                .width(200.dp)
-                                .padding(8.dp),
+                                .width(itemWidth200)
+                                .padding(padding8),
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
-                                text = "Войти",
+                                text = stringResource(R.string.enter),
                                 style = Typography.bodySmall,
                                 color = MaterialTheme.colorScheme.background
                             )
@@ -88,4 +92,3 @@ fun StartScreen(
         }
     }
 }
-

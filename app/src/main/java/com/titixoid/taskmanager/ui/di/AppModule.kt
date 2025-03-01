@@ -2,6 +2,7 @@ package com.titixoid.taskmanager.ui.di
 
 import com.titixoid.taskmanager.ui.admin.task_create.CreateTaskViewModel
 import com.titixoid.taskmanager.ui.admin.tasks.AdminTaskListViewModel
+import com.titixoid.taskmanager.ui.admin.worker_create.CreateWorkerViewModel
 import com.titixoid.taskmanager.ui.admin.workers.AdminWorkerListViewModel
 import com.titixoid.taskmanager.ui.login.SignInViewModel
 import com.titixoid.taskmanager.ui.start.StartScreenViewModel
@@ -27,10 +28,6 @@ val appModule = module {
             get()
         )
     }
-    viewModel { (workerId: String) ->
-        CreateTaskViewModel(
-            get(),
-            get()
-        )
-    }
+    viewModel { CreateTaskViewModel(get(), get()) }
+    viewModel { CreateWorkerViewModel(get()) }
 }

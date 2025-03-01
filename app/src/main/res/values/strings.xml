@@ -2,4 +2,54 @@
     <string name="app_name">TaskManager</string>
     <string name="email_placeholder">login</string>
     <string name="password_placeholder">""</string>
+
+    <!-- Common Strings -->
+    <string name="enter">Войти</string>
+    <string name="task_list">Список задач</string>
+    <string name="have_nice_day">Приятного дня</string>
+    <string name="no_tasks">Нет задач</string>
+
+    <!-- Login Screen -->
+    <string name="login_title">Вход</string>
+    <string name="login_label">Логин</string>
+    <string name="password_label">Пароль</string>
+    <string name="login_error">Неверный логин или пароль</string>
+
+    <!-- Start Screen -->
+    <string name="app_logo">Логотип</string>
+
+    <!-- Task List Screens -->
+    <string name="worker_list">Список работников</string>
+    <string name="delete_task">Удаление задачи</string>
+    <string name="add_task">Добавить задачу</string>
+    <string name="tasks_count">Задач: %1$d</string>
+
+    <!-- Task Creation Screen -->
+    <string name="create_task_title">Создание задачи</string>
+    <string name="task_name">Название</string>
+    <string name="enter_task_name">Введите название</string>
+    <string name="task_description">Описание</string>
+    <string name="enter_task_description">Введите описание</string>
+    <string name="create_task_button">Создать задачу</string>
+    <string name="fill_all_fields">Заполните все поля</string>
+
+    <!-- Task Status -->
+    <string name="status_urgent">Срочно</string>
+    <string name="status_planned">Планово</string>
+    <string name="status_optional">Прочее</string>
+
+    <!-- Worker Creation Screen -->
+    <string name="create_worker_title">Создание работника</string>
+    <string name="worker_login_title">Логин для входа</string>
+    <string name="worker_first_name">Имя</string>
+    <string name="enter_first_name">Введите имя</string>
+    <string name="enter_login">Введите логин</string>
+    <string name="worker_last_name">Фамилия</string>
+    <string name="enter_last_name">Введите фамилию</string>
+    <string name="worker_email">Email</string>
+    <string name="enter_email">Введите email</string>
+    <string name="worker_password">Пароль</string>
+    <string name="enter_password">Введите пароль</string>
+    <string name="create_worker_button">Создать работника</string>
+    <string name="add_worker">Добавить работника</string>
 </resources>

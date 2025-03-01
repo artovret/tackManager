@@ -18,19 +18,25 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import com.titixoid.taskmanager.R
 import com.titixoid.taskmanager.ui.theme.Gradients
 import com.titixoid.taskmanager.ui.theme.TaskManagerTheme
 import com.titixoid.taskmanager.ui.theme.Typography
+import com.titixoid.taskmanager.ui.theme.cornerRadiusPercent50
+import com.titixoid.taskmanager.ui.theme.itemHeight70
+import com.titixoid.taskmanager.ui.theme.itemWidth300
+import com.titixoid.taskmanager.ui.theme.padding8
 import com.titixoid.taskmanager.ui.theme.primaryWhite
 import com.titixoid.taskmanager.ui.theme.space16
 import com.titixoid.taskmanager.ui.theme.space32
 import com.titixoid.taskmanager.ui.theme.space40
 import com.titixoid.taskmanager.ui.theme.space8
 import com.titixoid.taskmanager.ui.theme.space90
+import com.titixoid.taskmanager.ui.theme.zeroValue
 import com.titixoid.taskmanager.ui.widgets.BackgroundColumn
 import com.titixoid.taskmanager.ui.widgets.BottomBarInsetsSpacer
 import com.titixoid.taskmanager.ui.widgets.FormField
@@ -50,7 +56,7 @@ fun SignInScreen(
         Spacer(modifier = Modifier.height(space32))
 
         Text(
-            text = "Вход",
+            text = stringResource(R.string.login_title),
             style = Typography.titleLarge,
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Start
@@ -59,7 +65,7 @@ fun SignInScreen(
 
 
         Text(
-            text = "Логин",
+            text = stringResource(R.string.login_label),
             style = Typography.bodySmall,
             modifier = Modifier.fillMaxWidth()
         )
@@ -74,7 +80,7 @@ fun SignInScreen(
         Spacer(modifier = Modifier.height(space40))
 
         Text(
-            text = "Пароль",
+            text = stringResource(R.string.password_label),
             style = Typography.bodySmall,
             modifier = Modifier.fillMaxWidth()
         )
@@ -92,10 +98,10 @@ fun SignInScreen(
         Button(
             onClick = onLoginClicked,
             modifier = Modifier
-                .width(300.dp)
-                .height(70.dp),
-            shape = RoundedCornerShape(percent = 50),
-            contentPadding = PaddingValues(0.dp),
+                .width(itemWidth300)
+                .height(itemHeight70),
+            shape = RoundedCornerShape(percent = cornerRadiusPercent50),
+            contentPadding = PaddingValues(zeroValue),
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color.Transparent
             ),
@@ -105,17 +111,17 @@ fun SignInScreen(
                 modifier = Modifier
                     .background(
                         brush = Gradients.MainGradient,
-                        shape = RoundedCornerShape(percent = 50)
+                        shape = RoundedCornerShape(percent = cornerRadiusPercent50)
                     )
-                    .width(300.dp)
-                    .padding(8.dp),
+                    .width(itemWidth300)
+                    .padding(padding8),
                 contentAlignment = Alignment.Center
             ) {
                 if (signInUiState.isLoading) {
                     CircularProgressIndicator(color = MaterialTheme.colorScheme.background)
                 } else {
                     Text(
-                        text = "Войти",
+                        text = stringResource(R.string.enter),
                         style = Typography.bodyLarge,
                         color = primaryWhite
                     )
@@ -126,12 +132,12 @@ fun SignInScreen(
 
         if (signInUiState.error) {
             Text(
-                text = "Неверный логин или пароль",
+                text = stringResource(R.string.login_error),
                 style = Typography.bodySmall,
                 color = MaterialTheme.colorScheme.error,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 8.dp),
+                    .padding(top = space8),
                 textAlign = TextAlign.Center
             )
         }
@@ -149,7 +155,7 @@ fun SignInScreenPreview() {
             signInUiState = SignInUiState(
                 login = "traci.knox@example.com",
                 password = "ad"
-        ),
+            ),
             onEmailChanged = {},
             onPasswordChanged = {},
             onLoginClicked = {}

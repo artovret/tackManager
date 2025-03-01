@@ -12,6 +12,7 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
+import org.springframework.security.crypto.bcrypt.BCrypt
 
 class FirebaseUserRepository(
     private val firebaseAuth: FirebaseAuth,
@@ -142,6 +143,30 @@ class FirebaseUserRepository(
             document.getString("role")
         } catch (e: Exception) {
             null
+        }
+    }
+
+    override suspend fun createUser(user: User): Boolean {
+        if (user.password.isEmpty()) {
+            return false
+        }
+
+        val bcryptHashString = BCrypt.hashpw(user.password, BCrypt.gensalt(12))
+        val userMap = hashMapOf(
+            "firstName" to user.firstName,
+            "lastName" to user.lastName,
+            "email" to "test@gmail.com",
+            "role" to "worker",
+            "taskCount" to 0,
+            "login" to user.login,
+            "password" to bcryptHashString
+        )
+
+        return try {
+            firestore.collection("users").add(userMap).await()
+            true
+        } catch (e: Exception) {
+            false
         }
     }
 }
