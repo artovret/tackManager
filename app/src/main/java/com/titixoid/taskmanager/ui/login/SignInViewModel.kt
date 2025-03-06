@@ -14,6 +14,7 @@ data class SignInUiState(
     val login: String = "",
     val password: String = "",
     val role: String? = null,
+    val userId: String? = null,
     val error: Boolean = false,
     val isLoading: Boolean = false,
     val isSuccess: Boolean? = null
@@ -41,6 +42,7 @@ class SignInViewModel(
                 it.copy(
                     isSuccess = (user != null),
                     role = user?.role,
+                    userId = user?.id,
                     isLoading = false,
                     error = (user == null)
                 )

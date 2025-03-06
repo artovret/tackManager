@@ -9,7 +9,7 @@ import androidx.navigation.compose.composable
 import com.titixoid.taskmanager.ui.login.SignInScreen
 import com.titixoid.taskmanager.ui.login.SignInViewModel
 import com.titixoid.taskmanager.ui.start.navigation.AdminGraph
-import com.titixoid.taskmanager.ui.worker.tasks.navigation.WorkerDestination
+import com.titixoid.taskmanager.ui.worker.tasks.navigation.WorkerHomeDestination
 import kotlinx.serialization.Serializable
 import org.koin.androidx.compose.koinViewModel
 
@@ -23,7 +23,10 @@ fun NavGraphBuilder.login(navController: NavHostController) {
 
         LaunchedEffect(uiState.isSuccess, uiState.role) {
             if (uiState.isSuccess == true) {
-                val destination = if (uiState.role == "admin") AdminGraph else WorkerDestination
+                val destination =
+                    if (uiState.role == "admin") AdminGraph else WorkerHomeDestination(
+                        workerId = uiState.userId ?: ""
+                    )
                 navController.popBackStack()
                 navController.navigate(destination)
                 viewModel.resetAuthState()

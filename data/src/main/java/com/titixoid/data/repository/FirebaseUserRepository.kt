@@ -1,6 +1,11 @@
 package com.titixoid.data.repository
 
+import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.titixoid.data.models.UserDao
@@ -12,7 +17,6 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
-import org.springframework.security.crypto.bcrypt.BCrypt
 
 class FirebaseUserRepository(
     private val firebaseAuth: FirebaseAuth,
@@ -22,34 +26,51 @@ class FirebaseUserRepository(
 
     override suspend fun signIn(login: String, password: String): User? {
         return try {
-            val snapshot = firestore.collection("users")
+            val querySnapshot = firestore.collection("users")
                 .whereEqualTo("login", login)
                 .get()
                 .await()
 
-            if (snapshot.isEmpty) return null
-
-
-            val document = snapshot.documents[0]
-            val userDao = document.toObject(UserDao::class.java) ?: return null
-
-            val authResult =
-                firebaseAuth.signInWithEmailAndPassword(userDao.email, password).await()
-            val firebaseUser = authResult.user
-
-            val idTokenResult = firebaseUser?.getIdToken(false)?.await()
-            val token = idTokenResult?.token
-
-            if (!token.isNullOrEmpty()) {
-                authTokenDataStore.saveAuthToken(token)
+            if (querySnapshot.isEmpty) {
+                Log.w("FirebaseUserRepo", "User with login $login not found")
+                return null
             }
 
-            userDao.toDomainUser(document.id)
+            val userDoc = querySnapshot.documents[0]
+            val email = userDoc.getString("email") ?: run {
+                Log.w("FirebaseUserRepo", "Email not found for login $login")
+                return null
+            }
+
+            val authResult = firebaseAuth.signInWithEmailAndPassword(email, password).await()
+            val firebaseUser = authResult.user ?: return null
+
+            val token = firebaseUser.getIdToken(false).await().token
+            if (!token.isNullOrEmpty()) {
+                authTokenDataStore.saveAuthToken(token)
+                authTokenDataStore.saveUserEmail(email)
+            }
+
+            userDoc.toObject(UserDao::class.java)?.toDomainUser(userDoc.id)
         } catch (e: Exception) {
+            when (e) {
+                is FirebaseAuthInvalidUserException -> Log.e(
+                    "FirebaseUserRepo",
+                    "User not found",
+                    e
+                )
+
+                is FirebaseAuthInvalidCredentialsException -> Log.e(
+                    "FirebaseUserRepo",
+                    "Invalid password",
+                    e
+                )
+
+                else -> Log.e("FirebaseUserRepo", "SignIn error", e)
+            }
             null
         }
     }
-
     override fun getWorkersWithTaskCountFlow(): Flow<List<User>> = callbackFlow {
         val listener = firestore.collection("users")
             .whereEqualTo("role", "worker")
@@ -123,50 +144,86 @@ class FirebaseUserRepository(
         return try {
             val currentUser = firebaseAuth.currentUser
             if (currentUser != null) {
-                val role = getCachedUserRole(currentUser.uid)
-                AuthStatus(
-                    isAuthenticated = true,
-                    role = role,
-                    userId = currentUser.uid
-                )
-            } else {
-                AuthStatus(false, null, null)
+                val document = firestore.collection("users")
+                    .document(currentUser.uid)
+                    .get()
+                    .await()
+
+                if (document.exists()) {
+                    return AuthStatus(
+                        isAuthenticated = true,
+                        role = document.getString("role"),
+                        userId = currentUser.uid
+                    )
+                }
             }
+            AuthStatus(false, null, null)
         } catch (e: Exception) {
+            Log.e("AuthStatus", "Error checking auth status", e)
             AuthStatus(false, null, null)
         }
     }
 
-    private suspend fun getCachedUserRole(userId: String): String? {
-        return try {
-            val document = firestore.collection("users").document(userId).get().await()
-            document.getString("role")
-        } catch (e: Exception) {
-            null
-        }
+    override suspend fun logout() {
+        firebaseAuth.signOut()
+        authTokenDataStore.clearAuthData()
     }
 
     override suspend fun createUser(user: User): Boolean {
-        if (user.password.isEmpty()) {
+        if (user.password.isEmpty() || user.email.isEmpty() ||
+            user.firstName.isEmpty() || user.lastName.isEmpty() ||
+            user.login.isEmpty()
+        ) {
+            Log.e("FirebaseUserRepo", "Неполные данные пользователя")
             return false
         }
 
-        val bcryptHashString = BCrypt.hashpw(user.password, BCrypt.gensalt(12))
-        val userMap = hashMapOf(
-            "firstName" to user.firstName,
-            "lastName" to user.lastName,
-            "email" to "test@gmail.com",
-            "role" to "worker",
-            "taskCount" to 0,
-            "login" to user.login,
-            "password" to bcryptHashString
-        )
-
         return try {
-            firestore.collection("users").add(userMap).await()
+            val loginQuery = firestore.collection("users")
+                .whereEqualTo("login", user.login)
+                .get()
+                .await()
+
+            if (!loginQuery.isEmpty) {
+                throw LoginCollisionException("Логин ${user.login} уже занят")
+            }
+
+            val authResult =
+                firebaseAuth.createUserWithEmailAndPassword(user.email, user.password).await()
+            val firebaseUser = authResult.user ?: return false
+
+            val userMap = hashMapOf(
+                "firstName" to user.firstName,
+                "lastName" to user.lastName,
+                "email" to user.email,
+                "login" to user.login,
+                "role" to "worker",
+                "taskCount" to 0
+            )
+
+            firestore.collection("users")
+                .document(firebaseUser.uid)
+                .set(userMap)
+                .await()
+
             true
         } catch (e: Exception) {
-            false
+            val errorMessage = when (e) {
+                is FirebaseAuthUserCollisionException ->
+                    "Email ${user.email} уже используется другим аккаунтом"
+
+                is FirebaseAuthWeakPasswordException ->
+                    "Пароль слишком слабый. Минимум 6 символов"
+
+                is LoginCollisionException ->
+                    e.message ?: "Логин уже занят"
+
+                else -> "Ошибка создания пользователя: ${e.message}"
+            }
+            Log.e("FirebaseUserRepo", errorMessage, e)
+            throw Exception(errorMessage, e)
         }
     }
 }
+
+class LoginCollisionException(message: String) : Exception(message)

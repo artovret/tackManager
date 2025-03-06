@@ -95,6 +95,7 @@ fun NavGraphBuilder.admin(
                 onFirstNameChange = viewModel::onFirstNameChange,
                 onLastNameChange = viewModel::onLastNameChange,
                 onPasswordChange = viewModel::onPasswordChange,
+                onEmailChange = viewModel::onEmailChange,
                 onCreateWorker = {
                     viewModel.createWorker { isSuccess ->
                         if (isSuccess) {

@@ -20,6 +20,7 @@ fun UserDao.toDomainUser(id: String): User {
         firstName = this.firstName,
         lastName = this.lastName,
         password = this.password,
+        email = this.email,
         role = this.role,
         taskCount = this.taskCount,
     )

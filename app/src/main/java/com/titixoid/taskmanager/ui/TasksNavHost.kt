@@ -11,7 +11,7 @@ import com.titixoid.taskmanager.ui.start.navigation.AdminGraph
 import com.titixoid.taskmanager.ui.start.navigation.StartDestination
 import com.titixoid.taskmanager.ui.start.navigation.admin
 import com.titixoid.taskmanager.ui.start.navigation.start
-import com.titixoid.taskmanager.ui.worker.tasks.navigation.WorkerDestination
+import com.titixoid.taskmanager.ui.worker.tasks.navigation.WorkerHomeDestination
 import com.titixoid.taskmanager.ui.worker.tasks.navigation.workerRole
 
 @Composable
@@ -28,7 +28,7 @@ fun TasksNavHost(
                 StartNavigationDestination.Admin -> navController.navigate(AdminGraph)
                 StartNavigationDestination.Auth -> navController.navigate(SignInDestination)
                 is StartNavigationDestination.Worker -> navController.navigate(
-                    WorkerDestination(
+                    WorkerHomeDestination(
                         workerId = destination.workerId
                     )
                 )

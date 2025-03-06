@@ -15,10 +15,14 @@ data class CreateWorkerUiState(
     val firstName: String = "",
     val lastName: String = "",
     val password: String = "",
+    val email: String = "",
     val isLoading: Boolean = false,
     val errorMessage: String? = null
 ) {
-    val isFormValid: Boolean get() = firstName.isNotEmpty() && lastName.isNotEmpty()
+    val isFormValid: Boolean
+        get() = firstName.isNotEmpty() && lastName.isNotEmpty() &&
+                login.isNotEmpty() && password.isNotEmpty() &&
+                email.isNotEmpty()
 }
 
 class CreateWorkerViewModel(
@@ -44,6 +48,10 @@ class CreateWorkerViewModel(
         _uiState.value = _uiState.value.copy(password = password)
     }
 
+    fun onEmailChange(email: String) {
+        _uiState.value = _uiState.value.copy(email = email)
+    }
+
     fun createWorker(onResult: (Boolean) -> Unit) {
         _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null)
         viewModelScope.launch {
@@ -54,6 +62,7 @@ class CreateWorkerViewModel(
                     firstName = uiState.value.firstName,
                     lastName = uiState.value.lastName,
                     password = uiState.value.password,
+                    email = uiState.value.email,
                     role = "worker",
                     taskCount = 0,
                 )
@@ -61,10 +70,12 @@ class CreateWorkerViewModel(
                 _uiState.value = _uiState.value.copy(isLoading = false)
                 onResult(result)
             } catch (e: Exception) {
+                val errorMessage = e.message ?: "Ошибка при создании рабочего"
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
-                    errorMessage = e.message ?: "Ошибка при создании рабочего"
+                    errorMessage = errorMessage
                 )
+                onResult(false)
             }
         }
     }

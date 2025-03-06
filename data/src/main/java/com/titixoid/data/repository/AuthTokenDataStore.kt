@@ -10,25 +10,26 @@ import kotlinx.coroutines.flow.map
 class AuthTokenDataStore(
     private val dataStore: DataStore<Preferences>
 ) {
-
     companion object {
         val TOKEN_KEY = stringPreferencesKey("auth_token")
+        val EMAIL_KEY = stringPreferencesKey("auth_email")
     }
 
-    val authTokenFlow: Flow<String?> = dataStore.data.map { preferences ->
-        preferences[TOKEN_KEY]
-    }
+    val authTokenFlow: Flow<String?> = dataStore.data.map { it[TOKEN_KEY] }
+    val authEmailFlow: Flow<String?> = dataStore.data.map { it[EMAIL_KEY] }
 
     suspend fun saveAuthToken(token: String) {
-        dataStore.edit { preferences ->
-            preferences[TOKEN_KEY] = token
-        }
+        dataStore.edit { it[TOKEN_KEY] = token }
     }
 
-    // Очистка токена на случай логаута
-    suspend fun clearAuthToken() {
-        dataStore.edit { preferences ->
-            preferences.remove(TOKEN_KEY)
+    suspend fun saveUserEmail(email: String) {
+        dataStore.edit { it[EMAIL_KEY] = email }
+    }
+
+    suspend fun clearAuthData() {
+        dataStore.edit {
+            it.remove(TOKEN_KEY)
+            it.remove(EMAIL_KEY)
         }
     }
 }

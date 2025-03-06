@@ -42,11 +42,11 @@ import com.titixoid.taskmanager.ui.theme.padding16
 import com.titixoid.taskmanager.ui.theme.padding20
 import com.titixoid.taskmanager.ui.theme.padding30
 import com.titixoid.taskmanager.ui.theme.padding300
-import com.titixoid.taskmanager.ui.theme.padding56
 import com.titixoid.taskmanager.ui.theme.padding8
 import com.titixoid.taskmanager.ui.theme.primaryWhite
 import com.titixoid.taskmanager.ui.theme.secondTitleText
 import com.titixoid.taskmanager.ui.theme.size400
+import com.titixoid.taskmanager.ui.theme.space16
 import com.titixoid.taskmanager.ui.theme.taskNameText
 import com.titixoid.taskmanager.ui.theme.zeroValue
 import com.titixoid.taskmanager.ui.widgets.StyledInputField
@@ -59,6 +59,7 @@ fun CreateWorkerScreen(
     onFirstNameChange: (String) -> Unit,
     onLastNameChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
+    onEmailChange: (String) -> Unit,
     onCreateWorker: () -> Unit
 ) {
     val currentContext = LocalContext.current
@@ -108,13 +109,25 @@ fun CreateWorkerScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = padding20)
-                    .padding(top = padding56)
+                    .padding(top = padding30)
             ) {
                 StyledInputField(
-                    label = stringResource(R.string.worker_login_title),
-                    value = uiState.login,
-                    onValueChange = onLoginChange,
-                    placeholder = stringResource(R.string.enter_login),
+                    label = stringResource(R.string.worker_first_name),
+                    value = uiState.firstName,
+                    onValueChange = onFirstNameChange,
+                    placeholder = stringResource(R.string.enter_first_name),
+                    labelColor = primaryWhite.copy(alpha = 0.6f),
+                    textColor = taskNameText,
+                    cursorColor = descriptionText,
+                    placeholderColor = primaryWhite.copy(alpha = 0.3f),
+                    separatorColor = primaryWhite.copy(alpha = 0.9f)
+                )
+                Spacer(modifier = Modifier.height(space16))
+                StyledInputField(
+                    label = stringResource(R.string.worker_last_name),
+                    value = uiState.lastName,
+                    onValueChange = onLastNameChange,
+                    placeholder = stringResource(R.string.enter_last_name),
                     labelColor = primaryWhite.copy(alpha = 0.6f),
                     textColor = taskNameText,
                     cursorColor = descriptionText,
@@ -135,12 +148,11 @@ fun CreateWorkerScreen(
         ) {
 
             Spacer(modifier = Modifier.weight(0.7f))
-
             StyledInputField(
-                label = stringResource(R.string.worker_first_name),
-                value = uiState.firstName,
-                onValueChange = onFirstNameChange,
-                placeholder = stringResource(R.string.enter_first_name),
+                label = stringResource(R.string.worker_login_title),
+                value = uiState.login,
+                onValueChange = onLoginChange,
+                placeholder = stringResource(R.string.enter_login),
                 labelColor = secondTitleText.copy(alpha = 0.6f),
                 textColor = descriptionText,
                 cursorColor = descriptionText,
@@ -151,10 +163,10 @@ fun CreateWorkerScreen(
             Spacer(modifier = Modifier.weight(0.7f))
 
             StyledInputField(
-                label = stringResource(R.string.worker_last_name),
-                value = uiState.lastName,
-                onValueChange = onLastNameChange,
-                placeholder = stringResource(R.string.enter_last_name),
+                label = stringResource(R.string.worker_email),
+                value = uiState.email,
+                onValueChange = onEmailChange,
+                placeholder = stringResource(R.string.enter_email),
                 labelColor = secondTitleText.copy(alpha = 0.6f),
                 textColor = descriptionText,
                 cursorColor = descriptionText,
@@ -177,6 +189,16 @@ fun CreateWorkerScreen(
             )
 
             Spacer(modifier = Modifier.weight(1f))
+
+            uiState.errorMessage?.let { error ->
+                Text(
+                    text = error,
+                    color = Color.Red,
+                    style = Typography.bodyMedium,
+                    modifier = Modifier.padding(bottom = padding8)
+                )
+                Spacer(modifier = Modifier.height(space16))
+            }
 
             Button(
                 onClick = {
@@ -227,7 +249,8 @@ fun CreateWorkerPreview() {
             onLastNameChange = {},
             onCreateWorker = {},
             onLoginChange = {},
-            onPasswordChange = {}
+            onPasswordChange = {},
+            onEmailChange = {}
         )
     }
 }
