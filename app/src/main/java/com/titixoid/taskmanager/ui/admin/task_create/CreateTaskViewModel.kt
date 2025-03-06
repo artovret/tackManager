@@ -21,10 +21,11 @@ data class CreateTaskUiState(
 }
 
 class CreateTaskViewModel(
+    workerId: String,
     private val createTaskUseCase: CreateTaskUseCase,
     private val updateTaskCountUseCase: UpdateUserTaskCountUseCase
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow(CreateTaskUiState())
+    private val _uiState = MutableStateFlow(CreateTaskUiState(workerId = workerId))
     val uiState = _uiState
 
     fun onTitleChange(title: String) {
