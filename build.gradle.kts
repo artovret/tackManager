@@ -6,5 +6,6 @@ plugins {
     alias(libs.plugins.com.android.library) apply false
     alias(libs.plugins.org.jetbrains.kotlin.jvm) apply false
     alias(libs.plugins.devtools.ksp) apply false
+    alias(libs.plugins.google.services) apply false
 }
 true
